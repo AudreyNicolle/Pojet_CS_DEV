@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jan  2 21:05:15 2022
-
 @author: utilisateur
 """
+import tkinter as tk
+from PIL import Image, ImageTk
 
 class projectile:
     
@@ -13,7 +14,9 @@ class projectile:
         self.__y = y
         self.vel = 0.01
         self.canvas = canvas
-        self.image = canvas.create_rectangle( self.__x+20, self.__y+20, self.__x+40, self.__y+40, fill='red')
+        self.image = Image.open("Image\boule_de_feu.png")
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50))) 
+        self.mechant = self.__canvas.create_image(self.__x,self.__y, image = self.redi_image)
         
     def run(self):
         """ déplacement du projectile jusqu'en haut de l'écran """
