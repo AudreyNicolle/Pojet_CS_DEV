@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Dec 13 14:42:01 2021
-
 @author: emma.begard
 """
 import tkinter as tk
@@ -18,7 +17,7 @@ class class_window :
      
         self.width = width
         self.height = height
-        self.window = tk.Tk()
+        self.window = tk.Toplevel()
         self.mechant= 0
         self.canvas = tk.Canvas(self.window, bg='black')
         self.player = pl.player( self.window, self.canvas)
