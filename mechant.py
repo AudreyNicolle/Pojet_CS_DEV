@@ -19,12 +19,12 @@ class mechant :
         self.__x= x
         self.__y = y
         self.mechant = canvas.create_rectangle( self.__x+20, self.__y+20, self.__x+40, self.__y+40, fill='red')
-        self.largeure = 20
+        self.width = 20
         self.height = 20
         self.dir = 1
         self.vel = self.dir*0.05
         self.window = window
-        
+        self.__vie = 2
 
 
         
@@ -35,7 +35,6 @@ class mechant :
             self.dir = -1
             #print("gauche")
                 
-                
         elif self.__x <= 2:
             self.dir =1
             #print("droite")
@@ -43,11 +42,10 @@ class mechant :
         self.__x += self.vel*self.dir
         #print(self.__x)
         
-        
         # on bouge l'enemy
         self.__canvas.coords(self.mechant, self.__x+20, self.__y+20, self.__x+40, self.__y+40)
         #print("déplacement")
         self.__canvas.after(1, self.move)
-
         
-        
+    def vie(self, degats):
+        self.__vie += degats

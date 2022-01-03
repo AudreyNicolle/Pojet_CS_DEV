@@ -22,7 +22,8 @@ class class_window :
         self.mechant= 0
         self.canvas = tk.Canvas(self.window, bg='black')
         self.player = pl.player( self.window, self.canvas)
-        self.enemy = []        
+        self.enemy = []  
+        self.game = True
         
         
         
@@ -42,16 +43,13 @@ class class_window :
         button_quit = tk.Button(self.window, text='quit', command=self.window.destroy)
         button_quit.grid(row = 20, column = 20)
         
-        """move = tk.Button(self.window, text ='move')
-        move.bind('<Right>', self.player.right)
-        move.grid(column=20, row=10)
-        move.focus()"""
+ 
         
         # resizeable playing area
         can_width =self.window.winfo_screenwidth()
         can_height = self.window.winfo_screenheight()
         self.canvas.config(width=can_width, height=can_height)
-        self.canvas.grid(column=0, row=2, rowspan = 19, columnspan=19)
+        self.canvas.grid(column=0, row=2, rowspan = 19)
         
         # tout les truc interactifs 
         self.mechant = mechant.mechant(self.window, self.canvas, 400,200)
@@ -63,21 +61,26 @@ class class_window :
     
     def collisions(self):
         """ cette fonction détecte les collisions entre le joueur et les enmis"""
-        for enemi in self.enemy:
-            pass
+        #print("test  ")
+        #for enemy in self.enemy:
+            # au cas ou on veut modifier les prinsipes du jeu et tirer plusieurs projectiles
+        for projectile in self.player.projectiles :
+            projectile.collision(self.enemy[0])
+        self.canvas.after(1, self.collisions)
         
-    def main(self):
+        
+    def main (self):
         
         """ the fonction running the whole project """
         self.window.geometry( "{}x{}".format(self.width, self.height) )
         self.principale()
         self.mechant.move()
-        self.player.tout()  
-
-
+        self.player.tout()
+        self.collisions()     
         self.window.mainloop()
+
         
-  
+""" partie test """
         
 
 ecran= class_window(1000,800)
