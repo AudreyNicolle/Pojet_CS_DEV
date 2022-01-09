@@ -5,6 +5,7 @@ Created on Sat Jan  1 20:43:01 2022
 @author: emma1
 """
 import projectile as pj
+from PIL import Image, ImageTk
 
 class player :
     
@@ -15,19 +16,23 @@ class player :
         self.vel = 10
         self.canvas = canvas
         self.window = window
-        self.__image = canvas.create_rectangle( self.__x+20, self.__y+20, self.__x+40, self.__y+40, fill='blue')
+        #self.__image = canvas.create_rectangle( self.__x+20, self.__y+20, self.__x+40, self.__y+40, fill='blue')
+        self.image = Image.open("Image\yeti.png")
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50)))
+        self.yeti = self.canvas.create_image(self.__x,self.__y, image = self.redi_image )
         self.projectiles = [ ]
         
         
     def move_right(self, evt):
         """ déplacement à droite """
         self.__x += self.vel
-        self.canvas.coords(self.__image, self.__x+20, self.__y+20, self.__x+40, self.__y+40)
+        self.canvas.move(self.yeti, self.vel, 0)
         
     def move_left(self, evt):
         """ déplacement à gauche """
+        
         self.__x += -self.vel
-        self.canvas.coords(self.__image, self.__x+20, self.__y+20, self.__x+40, self.__y+40)
+        self.canvas.move(self.yeti, -self.vel, 0)
         
     def crea_projectile (self, event):
         """ création d'un projectile, objet de classe projectile """

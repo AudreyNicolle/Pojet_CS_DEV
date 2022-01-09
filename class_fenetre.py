@@ -58,15 +58,16 @@ class class_window :
         
         
      
-    
+
     def collisions(self):
-        """ cette fonction détecte les collisions entre le joueur et les enmis"""
+        #cette fonction détecte les collisions entre le joueur et les enmis
         #print("test  ")
         #for enemy in self.enemy:
             # au cas ou on veut modifier les prinsipes du jeu et tirer plusieurs projectiles
         for projectile in self.player.projectiles :
             projectile.collision(self.enemy[0])
         self.canvas.after(1, self.collisions)
+ 
         
         
     def main (self):
