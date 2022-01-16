@@ -125,7 +125,7 @@ class class_window :
             else : 
                 for bad_guy in sous_lst :
                     bad_guy.move(0)
-                    bad_guy.tir(randint(1,10000)) 
+                    bad_guy.tir(randint(1,10000)) #permet de les faire tirer avec une chance sur 10 000, cf fontion tir
                     
         #rappelle de la fonction pour un mouvement continu            
         self.canvas.after(1, self.move_groupe) 
@@ -138,17 +138,19 @@ class class_window :
         Rteurns : none
         """
         
-        i = 0 #initialisation de l'itérateur de la liste mère
-        y = 20#initailisation de la position verticale des mechants
+        #Initialisation 
+        i = 0 
+        y = 20
         while i < 4 :
             
             y += 100 #changement de la poition verticale pour chaque sous liste
-            j = 0 #initialisation de l'itérateur d'une des sous liste
+            #Initialisation
+            j = 0 
             sous_lst_enemy = [] #initialisation sous liste
-            x = 50 #initailisation de la position horizontale des mechants
+            x = 50 
             
             while j < 11 : 
-                    x += 70 #changement de la poition horizontale pour chaque sous liste
+                    x += 70 #changement de la poition horizontale pour chaque mechant
                     bad_guy = mechant.Mechant(self.window,self.canvas,x,y) 
                     sous_lst_enemy.append(bad_guy)
                     j += 1
