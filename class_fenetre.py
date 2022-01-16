@@ -3,6 +3,12 @@
 """
 Created on Mon Dec 13 14:42:01 2021
 @author: emma.begard & audrey.nicolle
+
+Ce fichier contient la classe qui s'occupe de la gestion de la fenêtre du jeu et des actions de celui-ci.
+
+To-do : - faire la vie --> résoudre canvas qui apparaît pas ou changer et faire un label or du canvas
+        - faire le mechant bonus
+        - pour le score (stringVar et set)
 """
 #Import -----------------------------------------------------------------------
 
