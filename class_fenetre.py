@@ -22,7 +22,7 @@ class class_window :
         self.mechant= 0
         self.canvas = tk.Canvas(self.window, bg='black')
         self.player = pl.player( self.window, self.canvas)
-        self.enemy = []  
+        self.enemys = []  
         self.game = True
         
         
@@ -53,22 +53,36 @@ class class_window :
         
         # tout les truc interactifs 
         self.mechant = mechant.mechant(self.window, self.canvas, 400,200)
-        
-        self.enemy.append(self.mechant)
+        self.enemys.append(self.mechant)
         
         
      
 
     def collisions(self):
-        #cette fonction détecte les collisions entre le joueur et les enmis
-        #print("test  ")
-        #for enemy in self.enemy:
-            # au cas ou on veut modifier les prinsipes du jeu et tirer plusieurs projectiles
-        for projectile in self.player.projectiles :
-            projectile.collision(self.enemy[0])
+        """cette fonction détecte les collisions entre le joueur et les enmis"""
+   
+        for enemy in self.enemys :
+            # on test si le méchant a encore de la vie
+            if enemy.vie < 1:
+                # on n'affiche plus le méchant
+                self.canvas.delete(enemy.mechant)
+                # on enlève le méchant de la liste des enemys, car il est mort
+                self.enemys.remove(enemy)
+            
+            # juste au cas ou ou on veiole pouvoir tirer plusieurs projectiles 
+            for projectile in self.player.projectiles :
+                projectile.collision(enemy )
+                
         self.canvas.after(1, self.collisions)
  
+    def mechant_move(self):
         
+        for  enemy in self.enemys :
+            print("etat enemy ",enemy.move)
+            # si le méchant n'as plu de points de vie
+            if enemy.move == False :
+                # on enlève le méchant de la liste des enemys, il n'existe plus 
+                self.enemys.pop(enemy)
         
     def main (self):
         
@@ -76,7 +90,7 @@ class class_window :
         self.window.geometry( "{}x{}".format(self.width, self.height) )
         self.principale()
         self.mechant.move()
-        self.player.tout()
+        self.player.tout(self.enemys)
         self.collisions()     
         self.window.mainloop()
 
