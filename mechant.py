@@ -1,62 +1,86 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Dec 21 21:17:22 2021
-@author: emma1
+@author: emma.begard & audrey.nicolle
 """
+#Import -----------------------------------------------------------------------
 import tkinter as tk
 from PIL import Image, ImageTk
+import projectile 
 
+#Classe------------------------------------------------------------------------
 
-class mechant :
+class Mechant :
     
-    def __init__(self, window,canvas, x, y):
-        """ parameters :
-            
-                canvas : la zone où doit être affiché le méchant
+    def __init__(self, window,canvas,x,y):
+        """ 
+        Cette classe permet de générer des méchants et de gérer leurs actions 
+        propres. 
         
+        Parameters :
+                window : la fenetre du jeu (tk)
+                canvas : la zone de jeu où s'affiche le méchant
+                self.x : position sur l'axe des abscices (int)
+                self.y : position sur l'axe des ordonnées (int)
+                self.image : image du méchant
+                self.redi_image : image du méchant redimensionnée
+                self.mechant : canvas image du mechant (objet canvas)
+                self.dir : direction du méchant (int 1 ou -1)
+                self.vel = vélocité du mechant (int)
+                
+        Returns : None                
         """
-        self.__canvas = canvas
-        self.__x= x
-        self.__y = y
-        #self.mechant = canvas.create_rectangle( self.__x+20, self.__y+20, self.__x+40, self.__y+40, fill='red')
-        self.image = Image.open("sorcier.png")
-        self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50))) 
-        self.mechant = self.__canvas.create_image(self.__x,self.__y, image = self.redi_image )
-        self.largeure = 20
-        self.height = 20
-        self.dir = 1
-        self.vel = self.dir*0.05
         self.window = window
+        self.canvas = canvas
+        self.x= x
+        self.y = y
+        self.image = Image.open("Image/sorcier.png")
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((70,70))) 
+        self.mechant = self.canvas.create_image(self.x,self.y, image = self.redi_image )
+        self.dir = 1
+        self.vel = self.dir*0.08
+        self.lst_projectile = []
+        self.__vie = 2
         
+        
+    def move(self,dy): 
+        """
+        Cette fonction permet de déplacaer horizontalement le méchant vers la 
+        gauche ou la droite selon son indice de direction self.dir.
+        
+        Parameters : dy => deplcement verticale (int)
 
-
-        
-    def move(self): 
-        
-        #les conditions pour que l'énemy ne sorte pas de l'écran
-        if self.__x >= 800:
-            self.dir = -1
-            #print("gauche")
-                
-                
-        elif self.__x <= 2:
-            self.dir =1
-            #print("droite")
-        
-        #print(self.__x)
-        
+        Returns : None
+        """
         
         # on bouge l'enemy
-        self.__canvas.move(self.mechant,self.vel*self.dir,0)
-        self.__x = self.__canvas.bbox(self.mechant)[0]
-        print(self.__x)
-        #print("déplacement")
-        self.__canvas.after(1, self.move)
+        #move(entité,x,y)
+        self.canvas.move(self.mechant,self.vel*self.dir,dy)
+        #récupère la position 
+        self.x = self.canvas.bbox(self.mechant)[0]
+        self.y = self.canvas.bbox(self.mechant)[1]
 
-    def image_perso (self) : 
         
-        image_me = tk.PhotoImage(file = "yeti.png" )
-        self.__canvas.create_image(0,0,image = image_me )
+    def tir (self,on_tir) :
+        """ 
+        Cette fonction permet de tirer des boules de feu. 
+        
+        Parameters : on_tir => permet d'avoir une probalité de tir correcte par
+                            rapport au nombre de fois que la fonction est appelé
+                            (int)
+        Returns : none
+        """
+        
+        if on_tir == 2 :
+            
+            boule_de_feu = projectile.Projectile(self.x+2,self.y+2,self.canvas,\
+                                             "Image/boule_de_feu.png", 1)
+            self.lst_projectile.append(boule_de_feu)
+            self.lst_projectile[-1].run(self.lst_projectile)
+      
+    def vie(self, degats):
+        self.__vie += degats
+
         
         
         
