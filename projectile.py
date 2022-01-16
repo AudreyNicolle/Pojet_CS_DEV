@@ -2,6 +2,8 @@
 """
 Created on Sun Jan  2 21:05:15 2022
 @author: emma.begard & audrey.nicolle
+
+Ce fichier contient la classe Projectile qui permet de gérer les projeciles.
 """
 
 #Import -----------------------------------------------------------------------

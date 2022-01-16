@@ -2,9 +2,12 @@
 """
 Created on Tue Dec 21 21:17:22 2021
 @author: emma.begard & audrey.nicolle
+
+Ce fichier contient les classes, la classe mère méchant et la classe fille M_bonus
+qui permmettent de gérer les actions internes des mechants du jeu.
+
 """
 #Import -----------------------------------------------------------------------
-import tkinter as tk
 from PIL import Image, ImageTk
 import projectile 
 

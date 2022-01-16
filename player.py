@@ -2,6 +2,8 @@
 """
 Created on Sat Jan  1 20:43:01 2022
 @author: emma.begard & audery.nicolle
+
+Ce fichier contient la classe player qui permet de gérer les actions du joueur.
 """
 #Import -----------------------------------------------------------------------
 
@@ -36,6 +38,9 @@ class Player :
         self.yeti = self.__canvas.create_image(self.__x,self.__y, image = self.redi_image )
         self.projectiles = []
         self.nb_vie = []
+        self.im_coeur = Image.open("Image/coeur.png")
+        self.redi_image1 = ImageTk.PhotoImage(self.im_coeur.resize((50,50))) 
+        
    
     def move_right(self, evt):
         """ 
@@ -94,23 +99,40 @@ class Player :
         self.window.bind('<space>', self.crea_projectile)
         self.__canvas.focus_set()
     
-    def crea_vie (self) : 
+    def crea_vie (self) :
+        """ 
+        Cette fonction permet de créer la barre de trois coeur de vie du joueur.
+        
+        Parameters : None
+        
+        Returns : none
+        """
+        #Initialisation
         i = 0
-        x = 600
-        y = 600
-        print('here')
+        x = 800
+
         while i < 3 : 
-            print('here'+ str(i)) 
-            
-            im_coeur = Image.open("Image/coeur.png")
-            redi_image = ImageTk.PhotoImage(im_coeur.resize((50,50))) 
-            vie = self.__canvas.create_image(x,y, image = redi_image )
-            self.__canvas.image = im_coeur
-            self.nb_vie.append(vie)
+             
+            vie = self.__canvas.create_image( x,680, image = self.redi_image1 )
+            self.nb_vie.append((vie,x))
             i += 1
             x += 70
+        print(self.nb_vie[0][1] + 70)
+    def gestion_vie (self, type_D_B) :
         
+        if type_D_B == -1 and self.nb_vie != [] :
+            del self.nb_vie[0] 
+        
+        elif type_D_B == 1 and len(self.nb_vie) < 3 :
+           
+            if self.nb_vie != [] :
+                vie = self.__canvas.create_image( 600,680, image = self.redi_image1 )
+                self.nb_vie.append((vie,600))
             
+            else :
+                print(self.nb_vie[-1][1] + 70)
+                vie = self.__canvas.create_image( self.nb_vie[-1][1] + 70,680, image = self.redi_image1 )
+                self.nb_vie.append((vie,self.nb_vie[-1][1] + 70))
     
     def tout(self):
         

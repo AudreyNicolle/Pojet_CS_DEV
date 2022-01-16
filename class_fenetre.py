@@ -45,7 +45,6 @@ class class_window :
         self.game = True
         
         
-        
     def principale(self):
         
         """ 
@@ -76,17 +75,12 @@ class class_window :
         self.canvas.grid(column=0, row=2, rowspan = 19)
         
         # tout les truc interactifs 
-        im_coeur = Image.open("Image/coeur.png")
-        redi_image = ImageTk.PhotoImage(im_coeur.resize((50,50))) 
-        self.canvas.create_image(400,500, image = redi_image )
-        self.canvas.image = im_coeur
         self.crea_mechant()
         self.move_groupe()
         self.player.crea_vie()
-        self.affichage_vie()
         self.player.tout()
         self.collisions()  
-
+        
     def collisions(self):
         #cette fonction détecte les collisions entre le joueur et les ennemis
         #print("test  ")
@@ -95,11 +89,7 @@ class class_window :
         for projectile in self.player.projectiles :
             projectile.collision(self.enemy[0])
         self.canvas.after(1, self.collisions)
-    
-    def affichage_vie (self) : 
-        for vie in self.player.nb_vie :
-            vie
-        self.canvas.after(10,self.affichage_vie)
+        
         
     def move_groupe (self) :
         """ 
@@ -162,10 +152,9 @@ class class_window :
                     j += 1
                     
             self.enemy.append(sous_lst_enemy)
-            i += 1
-    #def affichage_vie (self) : 
+            i += 1 
         
-       
+     
         
     def main (self):
         
