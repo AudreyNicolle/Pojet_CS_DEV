@@ -3,7 +3,8 @@
 Created on Sun Jan  2 21:05:15 2022
 @author: emma.begard & audrey.nicolle
 
-Ce fichier contient la classe Projectile qui permet de gérer les projeciles.
+Ce fichier contient la classe Projectile qui permet de gérer les projeciles et 
+sa classe fille Projectile_secret.
 """
 
 #Import -----------------------------------------------------------------------
@@ -44,6 +45,7 @@ class Projectile:
         self.dir = direction
         self.degats = -1
         self.vie = 1
+        self.type = 0
 
     def run(self, lst_projectiles):
         """ 
@@ -68,24 +70,26 @@ class Projectile:
             self.canvas.delete(self.projectile)
             del lst_projectiles[0]
 
-    def collision(self, enemy):
-        
+#•-----------------------------------------------------------------------------
 
-        x_1 = self.canvas.bbox(self.projectile)[0] 
-        x_2 = self.canvas.bbox(self.projectile)[2] 
-        y_1 = self.canvas.bbox(self.projectile)[1] 
-        y_2 = self.canvas.bbox(self.projectile)[3] 
-        #print(self.canvas.find_overlapping(x_1, y_1, x_2, y_2) )
-            
-        # les coordonnées de notre enemy
-        coords = self.canvas.bbox(enemy)
-            
-        if (x_2 > coords[0]> x_1) and (y_1 < coords[1]< y_2):
-            #print('collision  geuche !')
-            enemy.gestion_vie(self.degats)
-            self.vie += -1
-                
-        elif (x_2 > coords[2]> x_1) and (y_1 < coords[3]< y_2):
-            #print('collision  droite !')
-            enemy.gestion_vie(self.degats)
-            self.vie += -1
+class Projectile_secret(Projectile) :
+    """ 
+    Cette classe permet de créer les projectile secret du mechant bonus. Elle
+    hérite de la classe Projectile.
+    """
+     
+    def modif_caracteristiques(self) :
+        """        
+        Cette fonction permet de modifer quelques caractérisqtiques du 
+        projectile.
+    
+        Parameters : none 
+    
+        Returns : none 
+        """
+    
+        self.height = 15
+        self.width = 15 
+        self.vel = 15 
+        self.type = 1
+        

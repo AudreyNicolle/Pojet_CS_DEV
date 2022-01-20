@@ -6,12 +6,12 @@ Created on Mon Dec 13 14:42:01 2021
 
 Ce fichier contient la classe qui s'occupe de la gestion de la fenêtre du jeu et des actions de celui-ci.
 
-To-do : - faire collions projectileG projectile mechant, aussi chnager la sensibilité de la collion
+To-do : - faire collisions projectileG projectile mechant, aussi chnager la sensibilité de la collion
             et regarder cette erreur qui arrive une fois sur 4 : 
                 x_1 = self.canvas.bbox(entite1)[0]
             TypeError: 'NoneType' object is not subscriptable
-        - faire les tirs du méchants bonus 
         - pour le score (stringVar et set)
+        - faire les abris 
 """
 #Import -----------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ class class_window :
         self.canvas.config(width=can_width, height=can_height)
         self.canvas.grid(column=0, row=2, rowspan = 19)
         
-        # tout les truc interactifs 
+        #toutes les actions du jeu
         self.crea_mechant()
         self.move_groupe()
         self.player.crea_vie()
@@ -87,6 +87,26 @@ class class_window :
         self.papa.modif_caracteristique()
         self.move_papa()
         self.bad_daddy_is_comming()
+        self.gestion_tir_M_bonus()
+        
+    def gestion_tir_M_bonus(self) : 
+        """
+        Cette fonction permet de faire tirer le méchant, sooit avec son arme
+        secrète s'il est activé où comme un méchant normal.
+
+        Parameters : none
+        
+        Returns : none.
+        """
+        
+        if self.papa.arme_secrete == 0 :
+            self.papa.tir(randint(1,10))
+            
+        else :
+            self.papa.tir_secret(randint(1,100))
+            
+            
+        self.canvas.after(100, self.gestion_tir_M_bonus)
         
       
     def bad_daddy_is_comming(self) :
@@ -107,6 +127,7 @@ class class_window :
         #on chnage l'image si if validé
         if cpt <= 29 : 
             self.papa.into_mechant()
+            
         
         else :
             self.canvas.after(100, self.bad_daddy_is_comming) 
@@ -139,13 +160,20 @@ class class_window :
         Ensuite elle permet de vérifier si'il y a une collision entre un projectile
         d'un méchant et le joueur. Si c'est le cas, le joeur perd une vie et le 
         tir disparaît.
+        Elle vérfie que les méchants ont encore de la vie.
         Enfin elle permet de savoir si deux projectiles se collisionnent. Si 
         c'est le cas les deux disparaissent.
+        
         
         Parameters : none.
         
         Returns : none.
         """
+        #Si le mechant bonus n'a plus de vie, on le supprime.
+        if self.papa.vie == 0 :
+            self.canvas.delete(self.papa)
+            
+            
         #On va regarder toutes les collisions qui mettent en jeu les ennemis. 
         for lst_bad_guy in self.enemy :
             
@@ -163,20 +191,34 @@ class class_window :
                         
                         #on gère les collisions projectile gentil vs méchant 
                         for projectile in self.player.projectiles :
+                            
                             if self.collision(projectile.projectile,bad_guy.mechant) :
+                                
                                 projectile.vie -= 1
                                 bad_guy.perd_vie(-1)
+                            
+                            elif self.collision(projectile.projectile, self.papa.mechant) :
+                              
+                                self.papa.perd_vie(-1)
+                                projectile.vie -= 1
                                 
                         #on gère les collisions projectile méchant vs joueur
                         for projectile in bad_guy.lst_projectile :
+                            
                             if self.collision(projectile.projectile, self.player.yeti) :
+                               
                                 projectile.vie -= 1
                                 self.player.gestion_vie(-1)
+                            
+                                #on regarde si c'est pas un projectile secret
+                                if projectile.type == 1 :
+                                    self.player.gestion_vie(-1)
                         
                         #on gère les collisions joeur vs méchant
                         if self.collision(bad_guy.mechant, self.player.yeti) :
-                            print('here')
+                           
                             bad_guy.perd_vie(-1)
+                            
                             while self.player.nb_vie >= 1 :
                                 self.player.gestion_vie(-1)
                     
@@ -185,7 +227,7 @@ class class_window :
                         lst_bad_guy.remove(bad_guy)
                         # on n'affiche plus le méchant
                         self.canvas.delete(bad_guy.mechant)
-                
+        
         #on et un temps de rappel de la fonction de 50ms car en-dessous lorsqu'on
         #rappelle la fonction la collision n'est pas fini et cela fausse le reste
         #du programme
@@ -251,7 +293,7 @@ class class_window :
         """ 
         Permet de faire bouger horizontalement le bloc de mechant et de 
         descendre ce bloc lorsque un des sorciers d'une ligne de bloc touche 
-        le cadre.
+        le cadre. Il permet aussi au mechant de tirer aléatoirement.
         
         Parameters : none
         
@@ -280,7 +322,9 @@ class class_window :
                 else : 
                     for bad_guy in sous_lst :
                         bad_guy.move(0)
-                        bad_guy.tir(randint(1,10000)) #permet de les faire tirer avec une chance sur 10 000, cf fontion tir
+                        #permet de les faire tirer avec une chance sur 10 000, 
+                        #cf fontion tir
+                        bad_guy.tir(randint(1,10000)) 
                     
         #rappelle de la fonction pour un mouvement continu            
         self.canvas.after(1, self.move_groupe) 

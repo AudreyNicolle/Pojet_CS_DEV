@@ -3,7 +3,7 @@
 Created on Tue Dec 21 21:17:22 2021
 @author: emma.begard & audrey.nicolle
 
-Ce fichier contient les classes, la classe mère méchant et la classe fille M_bonus
+Ce fichier contient les classes, la classe mère méchant et la classe fille NICOLLE
 qui permmettent de gérer les actions internes des mechants du jeu.
 
 """
@@ -44,6 +44,7 @@ class Mechant :
         self.vel = self.dir*0.1
         self.lst_projectile = []
         self.vie = 1
+        self.arme_secrete = 0
         
         
     def move(self,dy): 
@@ -84,6 +85,8 @@ class Mechant :
     def perd_vie(self, degats):
         self.vie += degats
 
+#•-----------------------------------------------------------------------------
+
 class NICOLLE (Mechant) :
     """
     Cette classe est celle qui permet de créer et de gérer le méchant bonus.Elle
@@ -104,10 +107,12 @@ class NICOLLE (Mechant) :
         self.redi_image = ImageTk.PhotoImage(self.image.resize((80,80))) 
         self.mechant = self.canvas.create_image(self.x,self.y, image = self.redi_image )
         self.vel = self.dir*0.5
+        self.vie = 2
         
     def into_mechant (self) :
         """ 
-        Cette fonction modifie l'image du mechant bonus.
+        Cette fonction modifié l'image du mechant bonus et d'activer le tir 
+        secret.
         
         Parameters : none 
         
@@ -116,9 +121,29 @@ class NICOLLE (Mechant) :
 
         self.image = Image.open("Image/papa_mechant.jpg")
         self.redi_image = ImageTk.PhotoImage(self.image.resize((80,80))) 
-        self.mechant = self.canvas.create_image(450,60, image = self.redi_image )
+        self.mechant = self.canvas.create_image(450,60, image = self.redi_image)
         
+        self.arme_secrete = 1
         
+    def tir_secret (self, on_tir) :
+        """
+        Cette fonction permet de tirer les tir secret du mechant bonus. 
+        
+        Parameters : 
+            on_tir : permet de créer de l'aléatoire. (int)
+            
+        Retruns : none.
+        """
+        
+        if on_tir == 2 :
+            
+            mauvaise_note = projectile.Projectile_secret(self.x+2,self.y+2,self.canvas,\
+                                             "Image/rocher.png", 1)
+            mauvaise_note.modif_caracteristiques()
+            
+            
+            self.lst_projectile.append(mauvaise_note)
+            self.lst_projectile[-1].run(self.lst_projectile)
          
         
         
