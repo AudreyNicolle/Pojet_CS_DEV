@@ -131,11 +131,9 @@ class Player :
         Returns : None
 
         """
+
         #Condition pour enlever de la vie, (on vérfie qu'on peut tjs en enlever)
         if type_D_B == -1 and self.nb_vie != [] :
-            print(self.nb_vie[0][0])
-            print(self.nb_vie[0])
-            print(self.nb_vie)
             self.canvas.delete(self.nb_vie[0][0])
             del self.nb_vie[0] 
         

@@ -41,7 +41,7 @@ class Mechant :
         self.redi_image = ImageTk.PhotoImage(self.image.resize((70,70))) 
         self.mechant = self.canvas.create_image(self.x,self.y, image = self.redi_image )
         self.dir = 1
-        self.vel = self.dir*0.08
+        self.vel = self.dir*0.1
         self.lst_projectile = []
         self.vie = 1
         
