@@ -10,7 +10,7 @@ To-do : - faire collions projectileG projectile mechant, aussi chnager la sensib
             et regarder cette erreur qui arrive une fois sur 4 : 
                 x_1 = self.canvas.bbox(entite1)[0]
             TypeError: 'NoneType' object is not subscriptable
-        - faire le mechant bonus
+        - faire les tirs du méchants bonus 
         - pour le score (stringVar et set)
 """
 #Import -----------------------------------------------------------------------
@@ -43,7 +43,8 @@ class class_window :
         self.mechant= 0
         self.canvas = tk.Canvas(self.window, bg='black')
         self.player = pl.Player( self.window, self.canvas)
-        self.enemy = []                   
+        self.enemy = [] 
+        self.papa  = mechant.NICOLLE(self.window,self.canvas,450,60)                
         self.game = True
         
         
@@ -83,6 +84,32 @@ class class_window :
         self.player.tout()
         self.gestion_collsions()  
         self.gestion_fin_de_vie_EHPHAD()
+        self.papa.modif_caracteristique()
+        self.move_papa()
+        self.bad_daddy_is_comming()
+        
+      
+    def bad_daddy_is_comming(self) :
+        """
+        Cette fonction permet de mofifier la tête du mechant bonus quand il y a
+        de mechant.
+        
+        Parameters : none.
+        
+        Returns : none
+        """
+        
+        cpt = 0
+        for sous_lst in self.enemy :
+            for bad_guy in sous_lst :
+                cpt +=1
+        
+        #on chnage l'image si if validé
+        if cpt <= 29 : 
+            self.papa.into_mechant()
+        
+        else :
+            self.canvas.after(100, self.bad_daddy_is_comming) 
         
     def gestion_fin_de_vie_EHPHAD (self) :
         
@@ -193,6 +220,32 @@ class class_window :
         #On vérifie s'i y a une collison par la droite de l'entité 1 sur l'entité 2       
         elif (x_2 > coords[2]> x_1) and (y_1 < coords[3]< y_2):
             return True   
+      
+    def move_papa(self) :
+        
+        """ 
+        Cette fonction permet de se faire déplacer le méchant bonus de gauche à
+        droite.
+        
+        Parameters : none
+        
+        Returns : none
+        """
+        #On vérifie qu'il ne déplca pas le cadre et on le fait bouger. S'il le
+        #dépasse on chnage sa direction.
+        if self.papa.x > 900 : 
+
+            self.papa.dir = -1 
+            self.papa.move(0)
+        
+        elif self.papa.x < 2 :
+            self.papa.dir = 1
+            self.papa.move(0)
+            
+        else : 
+            self.papa.move(0)
+        
+        self.canvas.after(1, self.move_papa) 
         
     def move_groupe (self) :
         """ 
@@ -204,7 +257,8 @@ class class_window :
         
         Returns : none 
         """
-        
+
+            
         for sous_lst in self.enemy :
             if sous_lst != [] :
                 
@@ -258,10 +312,8 @@ class class_window :
                     
             self.enemy.append(sous_lst_enemy)
             i += 1 
-        
-        
-     
-        
+
+    
     def main (self):
         
         """ the fonction running the whole project """

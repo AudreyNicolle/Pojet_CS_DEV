@@ -84,7 +84,42 @@ class Mechant :
     def perd_vie(self, degats):
         self.vie += degats
 
+class NICOLLE (Mechant) :
+    """
+    Cette classe est celle qui permet de créer et de gérer le méchant bonus.Elle
+    hérite de la classe mechant.
+    """
+    
+    def modif_caracteristique (self) :
+        """
+        Cette fonction permet de modifier les caractéristiques du mechant bonus
+        soit son image et sa vitesse de déplacement.
         
+        Parameters : none.
+
+        Returns : None.
+        """
+        
+        self.image = Image.open("Image/papa_gentil.png")
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((80,80))) 
+        self.mechant = self.canvas.create_image(self.x,self.y, image = self.redi_image )
+        self.vel = self.dir*0.5
+        
+    def into_mechant (self) :
+        """ 
+        Cette fonction modifie l'image du mechant bonus.
+        
+        Parameters : none 
+        
+        Returns : none 
+        """
+
+        self.image = Image.open("Image/papa_mechant.jpg")
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((80,80))) 
+        self.mechant = self.canvas.create_image(450,60, image = self.redi_image )
+        
+        
+         
         
         
         
