@@ -31,11 +31,12 @@ class Player :
         self.__x = 400
         self.__y = 600
         self.vel = 10
-        self.__canvas = canvas
+        self.canvas = canvas
         self.window = window
         self.image = Image.open("Image/yeti.png")
         self.redi_image = ImageTk.PhotoImage(self.image.resize((70,70))) 
-        self.yeti = self.__canvas.create_image(self.__x,self.__y, image = self.redi_image )
+        self.yeti = self.canvas.create_image(self.__x,self.__y, \
+                                               image = self.redi_image )
         self.projectiles = []
         self.nb_vie = []
         self.im_coeur = Image.open("Image/coeur.png")
@@ -53,7 +54,7 @@ class Player :
         """
         if self.__x < 950 :
             self.__x += self.vel
-            self.__canvas.move(self.yeti, self.vel, 0)
+            self.canvas.move(self.yeti, self.vel, 0)
         
     def move_left(self, evt):
         """ 
@@ -66,7 +67,7 @@ class Player :
         """
         if self.__x  > 50 :
             self.__x += -self.vel
-            self.__canvas.move(self.yeti, -self.vel, 0)
+            self.canvas.move(self.yeti, -self.vel, 0)
         
     def crea_projectile (self, evt):
         """ 
@@ -80,7 +81,8 @@ class Player :
         """
         # comme on ne peut avoir que 1 projectile à l'écran 
         if len(self.projectiles) <= 0:
-            self.projectiles.append( pj.Projectile(self.__x, self.__y, self.__canvas,"Image/rocher.png", -1) )
+            self.projectiles.append( pj.Projectile(self.__x, self.__y, self.canvas,\
+                                                   "Image/rocher.png", -1) )
             self.projectiles[-1].run(self.projectiles)
            
 
@@ -97,7 +99,7 @@ class Player :
         self.window.bind('<Right>', self.move_right)
         self.window.bind('<Left>', self.move_left)
         self.window.bind('<space>', self.crea_projectile)
-        self.__canvas.focus_set()
+        self.canvas.focus_set()
     
     def crea_vie (self) :
         """ 
@@ -113,27 +115,49 @@ class Player :
 
         while i < 3 : 
              
-            vie = self.__canvas.create_image( x,680, image = self.redi_image1 )
+            vie = self.canvas.create_image( x,680, image = self.redi_image1 )
             self.nb_vie.append((vie,x))
             i += 1
             x += 70
-        print(self.nb_vie[0][1] + 70)
+
     def gestion_vie (self, type_D_B) :
+        """
+        Cette fonction permet de gérer la vie du joueur. On peut soit ajouter 
+        une vie soit en retirer une.
         
+        Parameters : 
+            type_D_B : permet de savoir s'il faut enlever ou ajouter une vie (int)
+            
+        Returns : None
+
+        """
+        #Condition pour enlever de la vie, (on vérfie qu'on peut tjs en enlever)
         if type_D_B == -1 and self.nb_vie != [] :
+            print(self.nb_vie[0][0])
+            print(self.nb_vie[0])
+            print(self.nb_vie)
+            self.canvas.delete(self.nb_vie[0][0])
             del self.nb_vie[0] 
         
+        #Condition pour ajouter de la vie, (on vérfie qu'on a moins de 3 vies)
         elif type_D_B == 1 and len(self.nb_vie) < 3 :
            
             if self.nb_vie != [] :
-                vie = self.__canvas.create_image( 600,680, image = self.redi_image1 )
+                vie = self.canvas.create_image( 600,680, image = self.redi_image1 )
                 self.nb_vie.append((vie,600))
             
             else :
-                print(self.nb_vie[-1][1] + 70)
-                vie = self.__canvas.create_image( self.nb_vie[-1][1] + 70,680, image = self.redi_image1 )
+                #la position selon x dépend de celle de l'ojet avant celui que 
+                #l'on va ajouter dans self.nb_vie
+                vie = self.canvas.create_image( self.nb_vie[-1][1] + 70,680,\
+                                                 image = self.redi_image1 )
                 self.nb_vie.append((vie,self.nb_vie[-1][1] + 70))
     
     def tout(self):
-        
+      
         self.key_event()
+        """" for mechant in enemy :
+            try:
+                self.projectiles[0].collision(mechant)
+            except :
+                pass"""

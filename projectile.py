@@ -34,10 +34,11 @@ class Projectile:
         self.__x = x
         self.__y = y
         self.vel = 10
-        self.__canvas = canvas
+        self.canvas = canvas
         self.image = Image.open(chemin_image)
         self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50))) 
-        self.projectile = self.__canvas.create_image(self.__x,self.__y, image = self.redi_image)
+        self.projectile = self.canvas.create_image(self.__x,self.__y, \
+                                                     image = self.redi_image)
         self.height = 10
         self.width = 10
         self.dir = direction
@@ -58,23 +59,33 @@ class Projectile:
         #on vérifie que le missile est tjs dans l'écran et tjs existant
         if self.__y >= 1 and self.vie >= 1: 
             self.__y += self.dir*self.vel
-            self.__canvas.move(self.projectile, 0, self.dir*self.vel)
-            self.__canvas.after(50, self.run, lst_projectiles)
+            self.canvas.move(self.projectile, 0, self.dir*self.vel)
+            self.canvas.after(50, self.run, lst_projectiles)
         
         #sinon on le supprime du canvas et de la liste de projectiles
         else :
             
-            self.__canvas.delete(self.projectile)
+            self.canvas.delete(self.projectile)
             del lst_projectiles[0]
 
-    def collision(self, objet):
-         #gère les dégats donnés et reçus ( le missile enlève autant de points de vie qu'il fait de dégats et en perds autant) 
+    def collision(self, enemy):
         
 
-        #les x, y min et max de l'objet encollision(?) sur l'écran
-
-        x_1, y_1, x_2, y_2 = self.__canvas.bbox(self.projectile)
-
-        
-        # le coin gauche de l'objet est dans la zone des x du projectile 
-        #if  self.__x >= x_1  and x_1<= (self.__x+self.width):
+        x_1 = self.canvas.bbox(self.projectile)[0] 
+        x_2 = self.canvas.bbox(self.projectile)[2] 
+        y_1 = self.canvas.bbox(self.projectile)[1] 
+        y_2 = self.canvas.bbox(self.projectile)[3] 
+        #print(self.canvas.find_overlapping(x_1, y_1, x_2, y_2) )
+            
+        # les coordonnées de notre enemy
+        coords = self.canvas.bbox(enemy)
+            
+        if (x_2 > coords[0]> x_1) and (y_1 < coords[1]< y_2):
+            #print('collision  geuche !')
+            enemy.gestion_vie(self.degats)
+            self.vie += -1
+                
+        elif (x_2 > coords[2]> x_1) and (y_1 < coords[3]< y_2):
+            #print('collision  droite !')
+            enemy.gestion_vie(self.degats)
+            self.vie += -1

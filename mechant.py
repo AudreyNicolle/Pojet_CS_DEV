@@ -43,7 +43,7 @@ class Mechant :
         self.dir = 1
         self.vel = self.dir*0.08
         self.lst_projectile = []
-        self.__vie = 2
+        self.vie = 1
         
         
     def move(self,dy): 
@@ -81,8 +81,8 @@ class Mechant :
             self.lst_projectile.append(boule_de_feu)
             self.lst_projectile[-1].run(self.lst_projectile)
       
-    def vie(self, degats):
-        self.__vie += degats
+    def perd_vie(self, degats):
+        self.vie += degats
 
         
         

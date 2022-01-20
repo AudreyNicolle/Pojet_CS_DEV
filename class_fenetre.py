@@ -6,7 +6,7 @@ Created on Mon Dec 13 14:42:01 2021
 
 Ce fichier contient la classe qui s'occupe de la gestion de la fenêtre du jeu et des actions de celui-ci.
 
-To-do : - faire la vie --> résoudre canvas qui apparaît pas ou changer et faire un label or du canvas
+To-do : - régler problème vie 
         - faire le mechant bonus
         - pour le score (stringVar et set)
 """
@@ -79,17 +79,89 @@ class class_window :
         self.move_groupe()
         self.player.crea_vie()
         self.player.tout()
-        self.collisions()  
+        self.gestion_Pgentil_VS_Pmechant()
+        #self.gestion_collisions()  
         
-    def collisions(self):
-        #cette fonction détecte les collisions entre le joueur et les ennemis
-        #print("test  ")
-        #for enemy in self.enemy:
-        # au cas ou on veut modifier les prinsipes du jeu et tirer plusieurs projectiles
-        for projectile in self.player.projectiles :
-            projectile.collision(self.enemy[0])
-        self.canvas.after(1, self.collisions)
+    def gestion_collisions(self):
+        """cette fonction détecte les collisions entre le joueur et les enmis"""
+   
+        for lst_bad_guy in self.enemy :
+            if lst_bad_guy == []:
+                self.enemy.remove(lst_bad_guy)
+            else :
+                for bad_guy in lst_bad_guy :
+                    
+                    
+                    
+                    # on test si le méchant a encore de la vie
+                    if bad_guy.vie == 1:
+                        
+                        # juste au cas ou ou on veiole pouvoir tirer plusieurs projectiles 
+                        for projectile in self.player.projectiles :
+                            projectile.collision(bad_guy.mechant)
+                            
+                        for projectile in bad_guy.lst_projectile :
+                            projectile.collision(self.player.yeti)
+                    
+                    else :
+                        # on enlève le méchant de la liste des enemys, car il est mort
+                        lst_bad_guy.remove(bad_guy)
+                        # on n'affiche plus le méchant
+                        self.canvas.delete(bad_guy.mechant)
+                
+        self.canvas.after(1, self.gestion_collisions)    
+    def gestion_Pgentil_VS_Pmechant (self):
         
+        for lst_bad_guy in self.enemy :
+            
+            if lst_bad_guy == []:
+                self.enemy.remove(lst_bad_guy)
+            else :
+                for bad_guy in lst_bad_guy :
+
+                    # on test si le méchant a encore de la vie
+                    if bad_guy.vie == 1:
+                        
+                        # juste au cas ou ou on veiole pouvoir tirer plusieurs projectiles 
+                        for projectile in self.player.projectiles :
+                            if self.collision(projectile.projectile,bad_guy.mechant) :
+                                projectile.vie -= 1
+                                bad_guy.perd_vie(-1)
+                        
+                        for projectile in bad_guy.lst_projectile :
+                            if self.collision(projectile.projectile, self.player.yeti) :
+                                projectile.vie -= 1
+                                print('here')
+                                self.player.gestion_vie(-1)
+                        
+                    
+                    else :
+                        # on enlève le méchant de la liste des enemys, car il est mort
+                        lst_bad_guy.remove(bad_guy)
+                        # on n'affiche plus le méchant
+                        self.canvas.delete(bad_guy.mechant)
+                
+        self.canvas.after(1, self.gestion_Pgentil_VS_Pmechant)
+        
+        
+    def collision(self,entite1, entite2):
+        
+        x_1 = self.canvas.bbox(entite1)[0] 
+        x_2 = self.canvas.bbox(entite1)[2] 
+        y_1 = self.canvas.bbox(entite1)[1] 
+        y_2 = self.canvas.bbox(entite1)[3] 
+        #print(self.canvas.find_overlapping(x_1, y_1, x_2, y_2) )
+             
+        # les coordonnées de notre enemy
+        coords = self.canvas.bbox(entite2)
+            
+        if (x_2 > coords[0]> x_1) and (y_1 < coords[1]< y_2):
+            #print('collision  geuche !')
+            return True
+                
+        elif (x_2 > coords[2]> x_1) and (y_1 < coords[3]< y_2):
+            #print('collision  droite !')
+            return True   
         
     def move_groupe (self) :
         """ 
@@ -102,26 +174,28 @@ class class_window :
         Returns : none 
         """
         
-        for sous_lst in self.enemy : 
+        for sous_lst in self.enemy :
+            if sous_lst != [] :
+                
             
-            # vérifie que les sorciers des extrémités du bloc ne touche pas le bord
-            if sous_lst[-1].x > 900 : 
-                for bad_guy in sous_lst :
-                    bad_guy.dir = -1 #on change la direction
-                    bad_guy.move(15) #on les faits bouger horizontalement en descendant
+                # vérifie que les sorciers des extrémités du bloc ne touche pas le bord
+                if sous_lst[-1].x > 900 : 
+                    for bad_guy in sous_lst :
+                        bad_guy.dir = -1 #on change la direction
+                        bad_guy.move(15) #on les faits bouger horizontalement en descendant
                     
             
-            elif sous_lst[0].x < 2 : 
-                for bad_guy in sous_lst :
-                    bad_guy.dir = 1
-                    bad_guy.move(15)
+                elif sous_lst[0].x < 2 : 
+                    for bad_guy in sous_lst :
+                        bad_guy.dir = 1
+                        bad_guy.move(15)
                     
            
-            #sinon on ne fait que de les bouger horizontalement        
-            else : 
-                for bad_guy in sous_lst :
-                    bad_guy.move(0)
-                    bad_guy.tir(randint(1,10000)) #permet de les faire tirer avec une chance sur 10 000, cf fontion tir
+                #sinon on ne fait que de les bouger horizontalement        
+                else : 
+                    for bad_guy in sous_lst :
+                        bad_guy.move(0)
+                        bad_guy.tir(randint(1,10000)) #permet de les faire tirer avec une chance sur 10 000, cf fontion tir
                     
         #rappelle de la fonction pour un mouvement continu            
         self.canvas.after(1, self.move_groupe) 
@@ -137,7 +211,7 @@ class class_window :
         #Initialisation 
         i = 0 
         y = 20
-        while i < 4 :
+        while i < 3 :
             
             y += 100 #changement de la poition verticale pour chaque sous liste
             #Initialisation
@@ -153,6 +227,7 @@ class class_window :
                     
             self.enemy.append(sous_lst_enemy)
             i += 1 
+        
         
      
         
