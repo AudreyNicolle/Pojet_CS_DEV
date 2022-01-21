@@ -1,71 +1,95 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jan  2 21:05:15 2022
-
-@author: utilisateur
+@author: emma.begard & audrey.nicolle
+Ce fichier contient la classe Projectile qui permet de gérer les projeciles et 
+sa classe fille Projectile_secret.
 """
+
+#Import -----------------------------------------------------------------------
 
 from PIL import Image, ImageTk
 
-class projectile:
-    
-    def __init__(self, x, y, canvas):
-        
+#Classe -----------------------------------------------------------------------
 
+class Projectile:
+
+    def __init__(self, x, y, canvas, chemin_image, direction):
+        """ 
+        Cette classe s'occupe de gérer les projectiles du jeu.
+        
+        Parameters : 
+            self.__x : position selon l'axe des abscisses (int)
+            self.__y : position selon l'axe des ordonées (int)
+            self.vel : vélocité des projectiles (int)
+            self.__canvas : zone de jeu ( objet canvas)
+            self.image : image du projectile (objet canvas)
+            self.height : 
+            self.width : 
+            self.dir : direction du projectile (int)
+            self.degats : 
+            self.vie : le nombre de vie de l'objet
+        """
+        
         self.__x = x
         self.__y = y
-        self.vel = -20
+        self.vel = 10
         self.canvas = canvas
-        #self.image = canvas.create_rectangle( self.__x+10, self.__y+10, self.__x+20, self.__y+20, fill='yellow')
-        self.image = Image.open("Image/rocher.png")
-        self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50)))
-        self.rocher = self.canvas.create_image(self.__x,self.__y, image = self.redi_image, anchor='nw' )
+        self.image = Image.open(chemin_image)
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50))) 
+        self.projectile = self.canvas.create_image(self.__x,self.__y, \
+                                                     image = self.redi_image)
         self.height = 10
         self.width = 10
+        self.dir = direction
         self.degats = -1
         self.vie = 1
+        self.type = 0
 
-        
     def run(self, lst_projectiles):
-        """ déplacement du projectile jusqu'en haut de l'écran et l'éfface(visuel et liste projectile dans player) une fois sortit de l'écran
-            lst_projectile : la liste de player conenant tt les projectiles lancés"""
-        #print('on est dans run projectile')
+        """ 
+        Déplacement du projectile jusqu'en haut de l'écran et l'éfface
+        (visuel et liste projectile dans player) une fois sortit de l'écran
         
-        if self.__y >= 1 and self.vie >= 1:
-            # si on est dans la fenêtre on continue de faire bouger le rocher
-            self.canvas.move(self.rocher, 0, self.vel)
-            self.__y = self.canvas.coords(self.rocher)[1]
-            self.canvas.after(55, self.run, lst_projectiles)
- 
+        Parameters :
+            lst_projectile : la liste de player conenant tt les projectiles 
+                            lancés(lst)
+        Returns : none
+            """
+        
+        #on vérifie que le missile est tjs dans l'écran et tjs existant
+        if self.__y >= 1 and self.vie >= 1: 
+            # on actualyse l apositiopn du projectile
+            self.__y += self.dir*self.vel
+            # on déplace
+            self.canvas.move(self.projectile, 0, self.dir*self.vel)
+            self.canvas.after(50, self.run, lst_projectiles)
+        
+        #sinon on le supprime du canvas et de la liste de projectiles
         else :
             
-            # on n'affiche plus le projectile
-            self.canvas.delete(self.rocher)
+            self.canvas.delete(self.projectile)
             del lst_projectiles[0]
 
+#•-----------------------------------------------------------------------------
 
-    def collision(self, enemy):
-        
-
-        x_1 = self.canvas.bbox(self.rocher)[0] 
-        x_2 = self.canvas.bbox(self.rocher)[2] 
-        y_1 = self.canvas.bbox(self.rocher)[1] 
-        y_2 = self.canvas.bbox(self.rocher)[3] 
-        #print(self.canvas.find_overlapping(x_1, y_1, x_2, y_2) )
-            
-        # les coordonnées de notre enemy
-        coords = self.canvas.bbox(enemy.mechant)
-            
-        if (x_2 > coords[0]> x_1) and (y_1 < coords[1]< y_2):
-            #print('collision  geuche !')
-            enemy.perds_vie(self.degats)
-            self.vie += -1
-                
-        elif (x_2 > coords[2]> x_1) and (y_1 < coords[3]< y_2):
-            #print('collision  droite !')
-            enemy.perds_vie(self.degats)
-            self.vie += -1
-                
-
-        
-              
+class Projectile_secret(Projectile) :
+    """ 
+    Cette classe permet de créer les projectile secret du mechant bonus. Elle
+    hérite de la classe Projectile.
+    """
+     
+    def modif_caracteristiques(self) :
+        """        
+        Cette fonction permet de modifer quelques caractérisqtiques du 
+        projectile.
+    
+        Parameters : none 
+    
+        Returns : none 
+        """
+    
+        self.height = 15
+        self.width = 15 
+        self.vel = 15 
+        self.type = 1
