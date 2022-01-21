@@ -138,7 +138,7 @@ class NICOLLE (Mechant) :
         if on_tir == 2 :
             
             mauvaise_note = projectile.Projectile_secret(self.x+2,self.y+2,self.canvas,\
-                                             "Image/rocher.png", 1)
+                                             "Image/mauvaise_note.jpg", 1)
             mauvaise_note.modif_caracteristiques()
             
             

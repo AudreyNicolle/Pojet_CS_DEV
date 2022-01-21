@@ -32,13 +32,13 @@ class Projectile:
             self.vie :
         """
         
-        self.__x = x
-        self.__y = y
+        self.x = x
+        self.y = y
         self.vel = 10
         self.canvas = canvas
         self.image = Image.open(chemin_image)
         self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50))) 
-        self.projectile = self.canvas.create_image(self.__x,self.__y, \
+        self.projectile = self.canvas.create_image(self.x,self.y, \
                                                      image = self.redi_image)
         self.height = 10
         self.width = 10
@@ -59,16 +59,16 @@ class Projectile:
             """
         
         #on vérifie que le missile est tjs dans l'écran et tjs existant
-        if self.__y >= 1 and self.vie >= 1: 
-            self.__y += self.dir*self.vel
+        if self.y >= 1 and self.vie >= 1: 
+            self.y += self.dir*self.vel
             self.canvas.move(self.projectile, 0, self.dir*self.vel)
             self.canvas.after(50, self.run, lst_projectiles)
         
         #sinon on le supprime du canvas et de la liste de projectiles
         else :
-            
             self.canvas.delete(self.projectile)
-            del lst_projectiles[0]
+            lst_projectiles.remove(self)
+
 
 #•-----------------------------------------------------------------------------
 
@@ -92,4 +92,11 @@ class Projectile_secret(Projectile) :
         self.width = 15 
         self.vel = 15 
         self.type = 1
-        
+        self.image = Image.open("Image/mauvaise_note.jpg")
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((40,40))) 
+        self.projectile = self.canvas.create_image(self.x,self.y, \
+                                                     image = self.redi_image)
+ 
+#•-----------------------------------------------------------------------------
+
+#class Projectile

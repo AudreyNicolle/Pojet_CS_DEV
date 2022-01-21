@@ -6,20 +6,17 @@ Created on Mon Dec 13 14:42:01 2021
 
 Ce fichier contient la classe qui s'occupe de la gestion de la fenêtre du jeu et des actions de celui-ci.
 
-To-do : - faire collisions projectileG projectile mechant, aussi chnager la sensibilité de la collion
-            et regarder cette erreur qui arrive une fois sur 4 : 
-                x_1 = self.canvas.bbox(entite1)[0]
-            TypeError: 'NoneType' object is not subscriptable
-        - pour le score (stringVar et set)
-        - faire les abris 
+To-do : - faire les bonus tartiflettes
+        - régler problème mauvaise note qui enlève pas vie
+        - régler vitesse du padre
 """
 #Import -----------------------------------------------------------------------
 
 import tkinter as tk
 import player as pl
-import mechant as mechant
+import mechant 
 from random import randint
-
+import ilot as I
 
 #Classe -----------------------------------------------------------------------
 
@@ -44,7 +41,8 @@ class class_window :
         self.canvas = tk.Canvas(self.window, bg='black')
         self.player = pl.Player( self.window, self.canvas)
         self.enemy = [] 
-        self.papa  = mechant.NICOLLE(self.window,self.canvas,450,60)                
+        self.papa  = mechant.NICOLLE(self.window,self.canvas,450,60)   
+        self.lst_ilot = []             
         self.game = True
         
         
@@ -82,12 +80,34 @@ class class_window :
         self.move_groupe()
         self.player.crea_vie()
         self.player.tout()
-        self.gestion_collsions()  
+        self.gestion_collisions()  
         self.gestion_fin_de_vie_EHPHAD()
         self.papa.modif_caracteristique()
         self.move_papa()
         self.bad_daddy_is_comming()
         self.gestion_tir_M_bonus()
+        self.crea_ilots()
+        
+    def crea_ilots (self) : 
+        """
+        Cette fonction permet de créer 3 îlots composé de ligne de peti bloc.
+        
+        Parameters : none
+
+        Returns : none.
+        """
+        
+        i = 0 
+        x = 100
+        y = 500
+        while i < 3 : 
+            
+            ilot = I.Ilot(self.window,self.canvas,x,y)
+            ilot.crea_ilot() #pour créer les blocs qui le composent
+            self.lst_ilot.append(ilot)
+            x += 350 
+            i += 1
+            
         
     def gestion_tir_M_bonus(self) : 
         """
@@ -100,13 +120,12 @@ class class_window :
         """
         
         if self.papa.arme_secrete == 0 :
-            self.papa.tir(randint(1,10))
+            self.papa.tir(randint(1,100))
             
         else :
-            self.papa.tir_secret(randint(1,100))
+            self.papa.tir_secret   (randint(1,100))
             
-            
-        self.canvas.after(100, self.gestion_tir_M_bonus)
+        self.canvas.after(50, self.gestion_tir_M_bonus)
         
       
     def bad_daddy_is_comming(self) :
@@ -124,13 +143,13 @@ class class_window :
             for bad_guy in sous_lst :
                 cpt +=1
         
-        #on chnage l'image si if validé
+        #on change l'image si if validé
         if cpt <= 29 : 
             self.papa.into_mechant()
             
         
         else :
-            self.canvas.after(100, self.bad_daddy_is_comming) 
+            self.canvas.after(50, self.bad_daddy_is_comming) 
         
     def gestion_fin_de_vie_EHPHAD (self) :
         
@@ -150,8 +169,8 @@ class class_window :
         self.canvas.after(50, self.gestion_fin_de_vie_EHPHAD)    
         
             
-        
-    def gestion_collsions(self):
+       
+    def gestion_collisions(self):
         """
         Cette fonction permet de vérifier si les ennemis entre en collision avec 
         un projectile du joueur. Si c'est le cas les deux disparaissent. 
@@ -191,35 +210,43 @@ class class_window :
                         
                         #on gère les collisions projectile gentil vs méchant 
                         for projectile in self.player.projectiles :
-                            
+
                             if self.collision(projectile.projectile,bad_guy.mechant) :
                                 
                                 projectile.vie -= 1
                                 bad_guy.perd_vie(-1)
                             
                             elif self.collision(projectile.projectile, self.papa.mechant) :
-                              
+                                
                                 self.papa.perd_vie(-1)
                                 projectile.vie -= 1
+                            
+                            self.collision_ilot_projectile(projectile)
                                 
                         #on gère les collisions projectile méchant vs joueur
                         for projectile in bad_guy.lst_projectile :
-                            
+
                             if self.collision(projectile.projectile, self.player.yeti) :
                                
-                                projectile.vie -= 1
-                                self.player.gestion_vie(-1)
-                            
                                 #on regarde si c'est pas un projectile secret
                                 if projectile.type == 1 :
                                     self.player.gestion_vie(-1)
-                        
+                                    
+                                projectile.vie -= 1
+                                self.player.gestion_vie(-1)
+                            
+                                
+                            
+                            self.collision_ilot_projectile(projectile)
+                              
+
+                                    
                         #on gère les collisions joeur vs méchant
                         if self.collision(bad_guy.mechant, self.player.yeti) :
                            
                             bad_guy.perd_vie(-1)
                             
-                            while self.player.nb_vie >= 1 :
+                            while len(self.player.nb_vie) >= 1 :
                                 self.player.gestion_vie(-1)
                     
                     else :
@@ -228,24 +255,49 @@ class class_window :
                         # on n'affiche plus le méchant
                         self.canvas.delete(bad_guy.mechant)
         
+        for projectile in self.papa.lst_projectile :
+            
+            self.collision_ilot_projectile(projectile)
+            
         #on et un temps de rappel de la fonction de 50ms car en-dessous lorsqu'on
         #rappelle la fonction la collision n'est pas fini et cela fausse le reste
         #du programme
-        self.canvas.after(50, self.gestion_collsions)
+        self.canvas.after(50, self.gestion_collisions)
         
-        
+    def collision_ilot_projectile(self,projectile) :
+        """
+        Cette fonction permet de faire les actions nécessaires lorsqu'un projectile
+        rentre en collision avec un ilot.
+
+        Parameters
+            projectile : objet de la classe projectile
+
+        Returns : None.
+        """
+        #les boucles for permettent de rentrer dans la liste et d'obtenir un
+        #élément bloc
+        for ilot in self.lst_ilot :
+            for lst_bloc in ilot.lst_carre :
+                for i,bloc in enumerate(lst_bloc) :
+
+                    if self.collision(projectile.projectile, bloc) :
+
+                        projectile.vie -= 1
+                        self.canvas.delete(bloc)
+                        del lst_bloc[i]
+                        
     def collision(self,entite1, entite2):
         """ 
         Cette fonction permet de voir si deux objets rentrent en collisions.
         
         Parameters : 
             - entite1 : premier objet concerné par la collision (objet canvas) 
-            - entite1 : deuxième objet ci=oncerné par la collision (objet canvas) 
+            - entite1 : deuxième objet concerné par la collision (objet canvas) 
             
         Returns : on retourne un booléen. Vrai s'il y a eu collision.
         """
-       
-        #On récupère les coordonées de l'objet 1
+
+        #On récupère les coordonées de l'o bjet 1
         x_1 = self.canvas.bbox(entite1)[0] 
         x_2 = self.canvas.bbox(entite1)[2] 
         y_1 = self.canvas.bbox(entite1)[1] 
@@ -253,14 +305,14 @@ class class_window :
         
         
         # les coordonnées de la deuxième entité
-        coords = self.canvas.bbox(entite2)
+        coords2 = self.canvas.bbox(entite2)
          
         #On vérifie s'i y a une collison par la gauche de l'entité 1 sur l'entité 2
-        if (x_2 > coords[0]> x_1) and (y_1 < coords[1]< y_2):
+        if (x_2 > coords2[0]> x_1) and (y_1< coords2[1]< y_2):
             return True
         
         #On vérifie s'i y a une collison par la droite de l'entité 1 sur l'entité 2       
-        elif (x_2 > coords[2]> x_1) and (y_1 < coords[3]< y_2):
+        elif (x_2 > coords2[2]> x_1) and (y_1 < coords2[3]< y_2):
             return True   
       
     def move_papa(self) :
@@ -287,7 +339,7 @@ class class_window :
         else : 
             self.papa.move(0)
         
-        self.canvas.after(1, self.move_papa) 
+        self.canvas.after(50, self.move_papa) 
         
     def move_groupe (self) :
         """ 
