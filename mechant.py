@@ -57,7 +57,5 @@ class mechant :
         
         image_me = tk.PhotoImage(file = "yeti.png" )
         self.__canvas.create_image(0,0,image = image_me )
-        
-        
-        
+
         

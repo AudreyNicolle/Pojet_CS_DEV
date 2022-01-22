@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Dec 13 14:42:01 2021
+
 @author: emma.begard
 """
 import tkinter as tk
@@ -52,7 +53,8 @@ class class_window :
         self.canvas.config(width=can_width, height=can_height)
         self.canvas.grid(column=0, row=2, rowspan = 19, columnspan=19)
         
-        # tout les truc interactifs  
+
+        # tout les truc interactifs 
         self.mechant = mechant.mechant(self.window, self.canvas, 400,200)
         
         self.enemy.append(self.mechant)
@@ -81,5 +83,6 @@ class class_window :
 
 ecran= class_window(1000,800)
 #ecran.structure_fenetre()
+
 
 ecran.main()
