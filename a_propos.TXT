@@ -1,10 +1,26 @@
 Bonjour, 
 
-Nous avaons reproduit le fonctionnement du célèbre jeux space invaders ! 
-Cette fois aider notre fidèle yeti à eliminer les sorciers qui envahissent sa montagne !
-en effet les sorciers veulent lui voller ses thermos !
+Nous avons reproduit le fonctionnement du célèbre jeux Space invaders ! 
+Cette fois, aidez notre fidèle yéti à éliminer les sorciers qui envahissent 
+sa montagne ! En effet les sorciers veulent lui voler ses thermos !
 
-utilisation :
+Les règles : 
 
-déplacement droite et gauche : flèches de direction
-lancé de rocher : barre d'espace
+Comme au Space invader vous devez tuez les ennemis en leur tirant dessus. Vous 
+avez des ilots pour vous protégez jusqu'à que ceux-ci soit détruit par les 
+ennemis ou par vous même si vous ne faites pas attention. 
+Votre vie est affiché sous forme de coeur rouge en bas à droite. Vous en perdez
+un lorsque vous êtes touché par une boule de feu et deux si vous êtes touché 
+par une mauvaise note de la part du mechant bonus. 
+En effet ce mechant bonus est un professeur à ses heures perdues et peut vous 
+envoyez de mauvais note si vous l'énervez trop. Vous pouvez essayé de le tuer 
+mais attention, il est plutôt résistant.
+Heureusement, pour vous aidez, votre maman yeti vous envoie de temps en temps des
+tartiflettes qui vous redonnent un coeur, c'est dire si elles ne sont pas 
+délicieuses !
+Bonne chance à vous brave yéti !
+
+Les commandes :
+
+Déplacement droite et gauche : flèches de direction <-- et -->
+Lancé de rocher : barre d'espace
