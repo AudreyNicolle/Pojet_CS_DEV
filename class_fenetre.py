@@ -18,6 +18,8 @@ import mechant
 from random import randint
 import ilot as I
 from PIL import Image, ImageTk
+import projectile as P
+import time
 
 
 #Classe -----------------------------------------------------------------------
@@ -43,6 +45,7 @@ class class_window :
                     self.papa : mechant bonus (int, partie sur pause ou objet 
                                                canvas, partie en cours)
                     self.list_ilot : contient les 3 objets Ilot (list)
+                    self.lst_tartiflette : contien les objets tartiflettes (lst)
         """  
         self.width = 1000
         self.height = 800
@@ -56,7 +59,8 @@ class class_window :
         self.im_background = Image.open('Image/fond.png')
         self.background = ImageTk.PhotoImage(self.im_background.resize((1000,800))) 
         self.papa  = 0
-        self.lst_ilot = []    
+        self.lst_ilot = [] 
+        self.lst_tartiflette = []
       
     def about(self):
         """ 
@@ -123,7 +127,7 @@ class class_window :
         self.canvas.grid(column=0, row=2, rowspan = 19)
         
         #Fond du Jeu
-        self.canvas.create_image(10, 0, image=self.background,  anchor = "nw")
+        self.canvas.create_image(0, 0, image=self.background,  anchor = "nw")
         
     def crea_ilots (self) : 
         """
@@ -135,7 +139,7 @@ class class_window :
         """
         
         i = 0 
-        x = 100
+        x = 80
         y = 500
         
         while i < 3 : 
@@ -220,6 +224,12 @@ class class_window :
                     for bloc in lst_bloc :
                         self.canvas.delete(bloc)
                 ilot.lst_carre = []
+                
+            #on supprime les tartiflettes 
+            for tartiflette in self.lst_tartiflette : 
+                self.canvas.delete(tartiflette)
+            
+            self.lst_tartiflette = []
             
             #on supprime les projectiles du mechant bonus
             for projectile in self.papa.lst_projectile : 
@@ -231,6 +241,10 @@ class class_window :
             self.canvas.delete(self.papa.mechant)
             self.papa = 0
             
+            #on supprime les projectiles du joueur
+            for projectil in self.player.projectile :
+                self.canvas.delete(projectile.projectile)
+                
             #on supprime le canvas du joueur
             self.canvas.delete(self.player.yeti)
             
@@ -242,6 +256,69 @@ class class_window :
             self.canvas.after(50, self.gestion_fin_de_vie_EHPHAD)    
         
             
+    def on_prepare_une_bonne_tartiflette (self) : 
+        """
+        Cette fonction permet de créer une bonne tartiflette à donner à Mr.Yeti.
+        Elle est crée au bout d'un temps aléatoire.
+
+        Paramters : none.
+        
+        Returns : none.
+        """
+        if self.game :
+            
+            chance = randint(1,1000)
+            
+            if  chance == 1 :
+
+                x = randint(0,1)
+            
+            
+                if x == 0 :
+                    #on crée la tartiflette sur la coté gauche, 
+                    #tartiflette.type = 2
+                    tartiflette = P.Tartiflette(0, randint(100, 400), \
+                                    self.canvas, "Image/tartiflette.jpg", 1,2)
+                
+                else : 
+                    #on crée la tartiflette sur la coté gauche, 
+                    #tartiflette.type = 3
+                    tartiflette = P.Tartiflette(900, randint(100, 400), \
+                                    self.canvas, "Image/tartiflette.jpg", 1,3)
+        
+                self.lst_tartiflette.append(tartiflette) 
+            
+            self.canvas.after(100,self.on_prepare_une_bonne_tartiflette)
+            
+        
+    
+    def action_tartiflette (self) : 
+        """
+        Cette fonction permet de faire bouger les tartiflettes, 
+        de les faires disparaîtes si ça fait trop longtemps qu'elles sont là
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.game : 
+            
+            for tartiflette in self.lst_tartiflette : 
+                
+            
+                temps_de_vie = time.time_ns() - tartiflette.temps
+
+                if temps_de_vie > 5000000000 : #10s
+                
+                    self.canvas.delete(tartiflette.projectile)
+                    self.lst_tartiflette.remove(tartiflette)
+                
+                else :
+                    tartiflette.run(self.lst_tartiflette)
+                
+            self.canvas.after(50, self.action_tartiflette) 
+
         
     def gestion_collisions(self):
         """
@@ -263,6 +340,7 @@ class class_window :
             #Si le mechant bonus n'a plus de vie, on le supprime.
             if self.papa.vie == 0 :
                 self.canvas.delete(self.papa)
+                self.score += 10
             
             #On va regarder toutes les collisions qui mettent en jeu les ennemis. 
             for lst_bad_guy in self.enemy :
@@ -280,39 +358,52 @@ class class_window :
                         if bad_guy.vie == 1:
                             
                             #on gère les collisions projectile gentil vs méchant 
-                            for projectile_P in self.player.projectiles :
+                            for projectile_P in self.player.projectile :
 
                                 # si il y a collision 
-                                if self.collision(projectile_P.projectile,bad_guy.mechant) :
+                                if self.collision(projectile_P.projectile,\
+                                                  bad_guy.mechant,0) :
+                                    
                                     projectile_P.vie -= 1
                                     bad_guy.perd_vie(-1)
                                     # on ajopute les points que rapporte l emontre
                                     self.score += bad_guy.points
 
-                                self.collision_ilot_projectile(projectile_P)                                
+                                self.collision_ilot_projectile(projectile_P) 
+                            
                                 
                                 
-                                #on gère les collisions projectile méchant vs joueur
-                                for projectile_M in bad_guy.lst_projectile :
-                                   if self.collision(projectile_M.projectile, self.player.yeti) :
-                                       projectile_M.vie -= 1
-                                       self.player.gestion_vie(-1)
-                                       # on perds des points sur notre score, autant que le monstre rapporterais
-                                       self.score -= bad_guy.points
+                            #on gère les collisions projectile méchant vs joueur
+                            #et projectile gentil
+                            for projectile_M in bad_guy.lst_projectile :
+                               
+                                if self.collision(projectile_M.projectile, \
+                                                  self.player.yeti,0) :
+                                    
+                                    projectile_M.vie -= 1
+                                    self.player.gestion_vie(-1)
+                                    # on perds des points sur notre score, autant que le monstre rapporterais
+                                    self.score -= bad_guy.points
+                                    
+                                for projectile_P in self.player.projectile :
                                        
-                                   if self.collision(projectile_M.projectile, projectile_P.projectile) :
+                                    if self.collision(projectile_M.projectile,\
+                                                      projectile_P.projectile,0) :
+                                            
                                         projectile_M.vie -= 1
                                         projectile_P.vie -= 1
                                 
-                                   self.collision_ilot_projectile(projectile_M)
+                                self.collision_ilot_projectile(projectile_M)
                         
-                            #on gère les collisions joeur vs méchant
-                            if self.collision(bad_guy.mechant, self.player.yeti) :
+                            #on gère les collisions joueur vs méchant
+                            if self.collision(bad_guy.mechant, self.player.yeti,0) :
                                 # print('here')
                                 bad_guy.perd_vie(-1)
-                                while self.player.nb_vie >= 1 :
+                                
+                                while len(self.player.nb_vie) >= 1 :
+                                   
                                     self.player.gestion_vie(-1)
-                                    # on perds du score, 2 fois plus que le monstre rapporte
+                                    # on perd du score, 2 fois plus que le monstre rapporte
                                     self.score -= 2*bad_guy.points
                     
                         else :
@@ -323,15 +414,30 @@ class class_window :
         
             for projectile in self.papa.lst_projectile :
                 
-                if self.collision(projectile.projectile,self.player.yeti):
-                    
+                if self.collision(projectile.projectile,self.player.yeti,0):
                     projectile.vie -= 1
-                    self.player.gestion_vie(-1)
-                    self.player.gestion_vie(-1)
+                    self.player.gestion_vie(-1)                    
                     # on perds des points sur notre score, autant que le monstre rapporterais
                     self.score -= bad_guy.points
+                    
+                    #si c'est un tir_secret on enlève une vie en plus
+                    if projectile.type == 1 :
+                       self.player.gestion_vie(-1) 
                 
                 self.collision_ilot_projectile(projectile)
+                
+            for tartiflette in self.lst_tartiflette : 
+                
+                if self.collision(tartiflette.projectile, self.player.yeti,100) :
+                    
+                    self.player.gestion_vie(1)
+                    tartiflette.vie -= 1
+            for projectile in self.player.projectile : 
+                
+                if self.collision(projectile.projectile, self.papa.mechant, 0) :
+                    self.papa.vie -= 1
+                    projectile.vie -= 1
+                    
             
             #on et un temps de rappel de la fonction de 50ms car en-dessous lorsqu'on
             #rappelle la fonction la collision n'est pas fini et cela fausse le reste
@@ -354,20 +460,22 @@ class class_window :
             for lst_bloc in ilot.lst_carre :
                 for i,bloc in enumerate(lst_bloc) :
 
-                    if self.collision(projectile.projectile, bloc) :
+                    if self.collision(projectile.projectile, bloc,0) :
 
                         projectile.vie -= 1
                         self.canvas.delete(bloc)
                         del lst_bloc[i]
 
         
-    def collision(self,entite1, entite2):
+    def collision(self,entite1, entite2,y):
         """ 
         Cette fonction permet de voir si deux objets rentrent en collisions.
         
         Parameters : 
             - entite1 : premier objet concerné par la collision (objet canvas) 
-            - entite1 : deuxième objet concerné par la collision (objet canvas) 
+            - entite1 : deuxième objet concerné par la collision (objet canvas)
+            - y : permet d'ajouter de la sensibilité au niveau de l'axe des ordonnées
+                    (int)
             
         Returns : on retourne un booléen. Vrai s'il y a eu collision.
         """
@@ -381,13 +489,13 @@ class class_window :
         
         # les coordonnées de la deuxième entité
         coords2 = self.canvas.bbox(entite2)
-         
+
         #On vérifie s'i y a une collison par la gauche de l'entité 1 sur l'entité 2
-        if (x_2 > coords2[0]> x_1) and (y_1< coords2[1]< y_2):
+        if (x_2 > coords2[0]> x_1) and (y_1 - y < coords2[1] <  y_2 ):
             return True
         
         #On vérifie s'i y a une collison par la droite de l'entité 1 sur l'entité 2       
-        elif (x_2 > coords2[2]> x_1) and (y_1 < coords2[3]< y_2):
+        elif (x_2 > coords2[2]> x_1) and (y_1 - y < coords2[3] < y_2 ):
             return True   
       
     def move_papa(self) :
@@ -500,7 +608,8 @@ class class_window :
             # on met à jour l'affichage du score
             self.display_score.set(' Votre score est de : '+str(self.score))
             self.canvas.after(10, self.update_score)
-        
+       
+            
     def launch_game(self):
         """ 
         Cette fonction permet de lancer une partie. Elle contient tous les appels
@@ -515,18 +624,21 @@ class class_window :
         self.score = 0
         self.display_score.set(' Votre score est de : 0')
         self.papa = mechant.NICOLLE(self.window,self.canvas,450,60)  
-        self.update_score()
-        self.crea_mechant()
-        self.move_groupe()
+        self.crea_mechant()        
         self.player.crea_vie()
         self.player.tout()
-        self.gestion_collisions()  
-        self.gestion_fin_de_vie_EHPHAD()
         self.papa.modif_caracteristique()
+        self.crea_ilots()
+        self.move_groupe()
         self.move_papa()
         self.bad_daddy_is_comming()
+        self.gestion_collisions()  
+        self.gestion_fin_de_vie_EHPHAD()                   
         self.gestion_tir_M_bonus()
-        self.crea_ilots()
+        self.on_prepare_une_bonne_tartiflette()
+        self.action_tartiflette()
+        self.update_score()
+
 
 
     def main (self):

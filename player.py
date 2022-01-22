@@ -40,7 +40,7 @@ class Player :
         self.image = Image.open("Image/yeti.png")
         self.redi_image = ImageTk.PhotoImage(self.image.resize((70,70))) 
         self.yeti = 0 
-        self.projectiles = []
+        self.projectile = []
         self.nb_vie = []
         self.im_coeur = Image.open("Image/coeur.png")
         self.redi_image1 = ImageTk.PhotoImage(self.im_coeur.resize((50,50))) 
@@ -83,10 +83,10 @@ class Player :
         Returns : none
         """
         # comme on ne peut avoir que 1 projectile à l'écran 
-        if len(self.projectiles) <= 0:
-            self.projectiles.append( pj.Projectile(self.__x, self.__y, self.canvas,\
-                                                   "Image/rocher.png", -1) )
-            self.projectiles[-1].run(self.projectiles)
+        if len(self.projectile) <= 0:
+            self.projectile.append( pj.Projectile(self.__x, self.__y, self.canvas,\
+                                                   "Image/rocher.png", -1,0) )
+            self.projectile[-1].run(self.projectile)
            
 
     def key_event(self):
@@ -114,7 +114,7 @@ class Player :
         """
         #Initialisation
         i = 0
-        x = 800
+        x = 750
 
         while i < 3 : 
              
@@ -143,16 +143,11 @@ class Player :
         #Condition pour ajouter de la vie, (on vérfie qu'on a moins de 3 vies)
         elif type_D_B == 1 and len(self.nb_vie) < 3 :
            
-            if self.nb_vie != [] :
-                vie = self.canvas.create_image( 600,680, image = self.redi_image1 )
-                self.nb_vie.append((vie,600))
-            
-            else :
-                #la position selon x dépend de celle de l'ojet avant celui que 
-                #l'on va ajouter dans self.nb_vie
-                vie = self.canvas.create_image( self.nb_vie[-1][1] + 70,680,\
+            #la position selon x dépend de celle de l'ojet avant celui que 
+            #l'on va ajouter dans self.nb_vie
+            vie = self.canvas.create_image( self.nb_vie[0][1] - 70,680,\
                                                  image = self.redi_image1 )
-                self.nb_vie.append((vie,self.nb_vie[-1][1] + 70))
+            self.nb_vie.append((vie,self.nb_vie[-1][1] + 70))
     
     def tout(self):
         """

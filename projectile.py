@@ -10,12 +10,13 @@ sa classe fille Projectile_secret.
 #Import -----------------------------------------------------------------------
 
 from PIL import Image, ImageTk
+import time
 
 #Classe -----------------------------------------------------------------------
 
 class Projectile:
 
-    def __init__(self, x, y, canvas, chemin_image, direction):
+    def __init__(self, x, y, canvas, chemin_image, direction, genre):
         """ 
         Cette classe s'occupe de gérer les projectiles du jeu.
         
@@ -23,13 +24,13 @@ class Projectile:
             self.__x : position selon l'axe des abscisses (int)
             self.__y : position selon l'axe des ordonées (int)
             self.vel : vélocité des projectiles (int)
-            self.__canvas : zone de jeu ( objet canvas)
+            self.canvas : zone de jeu ( objet canvas)
             self.image : image du projectile (objet canvas)
-            self.height : 
-            self.width : 
+            self.projectile : image du projectile (objet canvas)
             self.dir : direction du projectile (int)
-            self.degats : 
-            self.vie :
+            self.degats : degats cuasés (int)
+            self.vie : vie du projectile (int)
+            self.temps : date de création du projectile (int)
         """
         
         self.x = x
@@ -40,12 +41,11 @@ class Projectile:
         self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50))) 
         self.projectile = self.canvas.create_image(self.x,self.y, \
                                                      image = self.redi_image)
-        self.height = 10
-        self.width = 10
         self.dir = direction
         self.degats = -1
         self.vie = 1
-        self.type = 0
+        self.type = genre
+        self.temps = time.time_ns()
 
     def run(self, lst_projectiles):
         """ 
@@ -87,11 +87,7 @@ class Projectile_secret(Projectile) :
     
         Returns : none 
         """
-    
-        self.height = 15
-        self.width = 15 
         self.vel = 15 
-        self.type = 1
         self.image = Image.open("Image/mauvaise_note.jpg")
         self.redi_image = ImageTk.PhotoImage(self.image.resize((40,40))) 
         self.projectile = self.canvas.create_image(self.x,self.y, \
@@ -99,6 +95,58 @@ class Projectile_secret(Projectile) :
  
 #•-----------------------------------------------------------------------------
 
+class Tartiflette(Projectile) :
+    """
+    Cette classe permet de créer des tartiflettes qui redonnent de la vie au 
+    joueur.
+    """
+    
+    def modif_caractéritique(self) : 
+        """        
+        Cette fonction permet de modifer quelques caractérisqtiques du 
+        projectile.
+    
+        Parameters : none.
+    
+        Returns : none.
+        """
+        self.image = Image.open("Image/tartiflette.jpg")
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((40,40))) 
+        self.projectile = self.canvas.create_image(self.x,self.y, \
+                                                     image = self.redi_image)
+        self.vel = 8
+
+    def run(self, lst_projectile) :  
+        """
+        Cette fonction permet de faire avancer les tartiflettes sans passer en 
+        dessous du yéti et selon une parabole.
+
+        Parameters :
+            lst_projectile : contient les tartiflettes (lst)
+
+        Returns : None.
+        """
+        
+        #on regarde si c'est une tartiflette qui vient de la gauche ou de la 
+        #droite
+        if self.type == 2 :
+            x = 1
+        else : 
+            x = -1
+            
+        #on vérifie que le missile est tjs existant
+        if self.vie >= 1 :
+            
+            #♥on vérifie qu'il ne va pas sous le yéti
+            if self.y <= 600 :
+        
+                self.y += self.dir*self.vel
+                self.canvas.move(self.projectile, x*self.vel, self.dir*self.vel)
+        
+        #sinon on le supprime du canvas et de la liste de projectiles
+        else :
+            self.canvas.delete(self.projectile)
+            lst_projectile.remove(self)
 
     
 

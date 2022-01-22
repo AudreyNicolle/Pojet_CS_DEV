@@ -79,7 +79,7 @@ class Mechant :
         if on_tir == 2 :
             
             boule_de_feu = projectile.Projectile(self.x+2,self.y+2,self.canvas,\
-                                             "Image/boule_de_feu.png", 1)
+                                             "Image/boule_de_feu.png", 1, 0)
             self.lst_projectile.append(boule_de_feu)
             self.lst_projectile[-1].run(self.lst_projectile)
       
@@ -107,7 +107,7 @@ class NICOLLE (Mechant) :
         self.image = Image.open("Image/papa_gentil.png")
         self.redi_image = ImageTk.PhotoImage(self.image.resize((80,80))) 
         self.mechant = self.canvas.create_image(self.x,self.y, image = self.redi_image )
-        self.vel = self.dir*0.5
+        self.vel = self.dir*3
         self.vie = 2
         
     def into_mechant (self) :
@@ -122,7 +122,7 @@ class NICOLLE (Mechant) :
 
         self.image = Image.open("Image/papa_mechant.jpg")
         self.redi_image = ImageTk.PhotoImage(self.image.resize((80,80))) 
-        self.mechant = self.canvas.create_image(450,60, image = self.redi_image)
+        self.mechant = self.canvas.create_image(self.x,60, image = self.redi_image)
         
         self.arme_secrete = 1
         
@@ -139,7 +139,7 @@ class NICOLLE (Mechant) :
         if on_tir == 2 :
             
             mauvaise_note = projectile.Projectile_secret(self.x+2,self.y+2,self.canvas,\
-                                             "Image/mauvaise_note.jpg", 1)
+                                             "Image/mauvaise_note.jpg", 1,1)
             mauvaise_note.modif_caracteristiques()
             
             
