@@ -45,6 +45,7 @@ class Mechant :
         self.lst_projectile = []
         self.vie = 1
         self.arme_secrete = 0
+        self.points = 1
         
         
     def move(self,dy): 
