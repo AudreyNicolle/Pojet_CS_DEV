@@ -40,6 +40,9 @@ class class_window :
                     self.display_score : le texte dans le label 
                                         score de la fenêtre d'affichage
                     self.background : image du fond du jeu (objet tk)
+                    self.papa : mechant bonus (int, partie sur pause ou objet 
+                                               canvas, partie en cours)
+                    self.list_ilot : contient les 3 objets Ilot (list)
         """  
         self.width = 1000
         self.height = 800
@@ -277,25 +280,31 @@ class class_window :
                         if bad_guy.vie == 1:
                             
                             #on gère les collisions projectile gentil vs méchant 
-                            for projectile in self.player.projectiles :
+                            for projectile_P in self.player.projectiles :
 
                                 # si il y a collision 
-                                if self.collision(projectile.projectile,bad_guy.mechant) :
-                                    projectile.vie -= 1
+                                if self.collision(projectile_P.projectile,bad_guy.mechant) :
+                                    projectile_P.vie -= 1
                                     bad_guy.perd_vie(-1)
                                     # on ajopute les points que rapporte l emontre
                                     self.score += bad_guy.points
 
+                                self.collision_ilot_projectile(projectile_P)                                
                                 
-                            #on gère les collisions projectile méchant vs joueur
-                            for projectile in bad_guy.lst_projectile :
-                                if self.collision(projectile.projectile, self.player.yeti) :
-                                    projectile.vie -= 1
-                                    self.player.gestion_vie(-1)
-                                    # on perds des points sur notre score, autant que le monstre rapporterais
-                                    self.score -= bad_guy.points
                                 
-                                self.collision_ilot_projectile(projectile)
+                                #on gère les collisions projectile méchant vs joueur
+                                for projectile_M in bad_guy.lst_projectile :
+                                   if self.collision(projectile_M.projectile, self.player.yeti) :
+                                       projectile_M.vie -= 1
+                                       self.player.gestion_vie(-1)
+                                       # on perds des points sur notre score, autant que le monstre rapporterais
+                                       self.score -= bad_guy.points
+                                       
+                                   if self.collision(projectile_M.projectile, projectile_P.projectile) :
+                                        projectile_M.vie -= 1
+                                        projectile_P.vie -= 1
+                                
+                                   self.collision_ilot_projectile(projectile_M)
                         
                             #on gère les collisions joeur vs méchant
                             if self.collision(bad_guy.mechant, self.player.yeti) :
@@ -313,6 +322,14 @@ class class_window :
                             self.canvas.delete(bad_guy.mechant)
         
             for projectile in self.papa.lst_projectile :
+                
+                if self.collision(projectile.projectile,self.player.yeti):
+                    
+                    projectile.vie -= 1
+                    self.player.gestion_vie(-1)
+                    self.player.gestion_vie(-1)
+                    # on perds des points sur notre score, autant que le monstre rapporterais
+                    self.score -= bad_guy.points
                 
                 self.collision_ilot_projectile(projectile)
             
