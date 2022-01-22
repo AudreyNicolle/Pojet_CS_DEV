@@ -16,7 +16,7 @@ class Player :
     
     def __init__(self,window, canvas):
         """ 
-        Cette claasse permet de gérer les actions propres du joueur.
+        Cette classe permet de gérer les actions propres du joueur.
         
         Parameters : 
             window : la fenetre du jeu (tk)
@@ -25,8 +25,12 @@ class Player :
             self.__y : position sur l'axe des ordonnées (int)
             self.vel : vélocité du joueur (int)
             self.image : image du joueur (objet canvas)
+            self.yeti : contiendra l'image du joueur quand la partie demarrera 
+                        (int ou objetc canvas)
             self.projectiles : contient tous les projectiles tirer par le joueur
                                 (lst)
+            self.nb_vie : contiendra les vies du joueur (list d'objet canvas)
+            self.im_coeur : image d'une vie (objet tk)
         """
         self.__x = 400
         self.__y = 600
@@ -35,8 +39,7 @@ class Player :
         self.window = window
         self.image = Image.open("Image/yeti.png")
         self.redi_image = ImageTk.PhotoImage(self.image.resize((70,70))) 
-        self.yeti = self.canvas.create_image(self.__x,self.__y, \
-                                               image = self.redi_image )
+        self.yeti = 0 
         self.projectiles = []
         self.nb_vie = []
         self.im_coeur = Image.open("Image/coeur.png")
@@ -152,11 +155,17 @@ class Player :
                 self.nb_vie.append((vie,self.nb_vie[-1][1] + 70))
     
     def tout(self):
-      
+        """
+        Cette fonction permet de créer l'image du joueur et d'appeler la fonction
+        qui permet de connaître les actions au clavier.
+        
+        Parameters : none.
+        
+        Returns : none.
+        """
+        
+        self.yeti = self.canvas.create_image(self.__x,self.__y, \
+                                             image = self.redi_image )
         self.key_event()
-        """" for mechant in enemy :
-            try:
-                self.projectiles[0].collision(mechant)
-            except :
-                pass"""
->>>>>>> travail_audrey
+
+

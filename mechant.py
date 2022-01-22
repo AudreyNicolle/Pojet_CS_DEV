@@ -145,7 +145,4 @@ class NICOLLE (Mechant) :
             self.lst_projectile.append(mauvaise_note)
             self.lst_projectile[-1].run(self.lst_projectile)
          
-        
-        
-        
-        
+    

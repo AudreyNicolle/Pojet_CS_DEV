@@ -1,0 +1,10 @@
+Bonjour, 
+
+Nous avaons reproduit le fonctionnement du célèbre jeux space invaders ! 
+Cette fois aider notre fidèle yeti à eliminer les sorciers qui envahissent sa montagne !
+en effet les sorciers veulent lui voller ses thermos !
+
+utilisation :
+
+déplacement droite et gauche : flèches de direction
+lancé de rocher : barre d'espace
