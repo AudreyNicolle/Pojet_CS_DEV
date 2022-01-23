@@ -24,3 +24,5 @@ Player.
 
 Toutes les images utilisées sont libre de droit ou bien leur utilisation a été
 validé par la personne concernée.
+
+Auteurs : Emma BEGARD et Audrey NICOLLE 
