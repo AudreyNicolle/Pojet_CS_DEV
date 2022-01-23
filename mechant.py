@@ -30,7 +30,10 @@ class Mechant :
                 self.mechant : canvas image du mechant (objet canvas)
                 self.dir : direction du méchant (int 1 ou -1)
                 self.vel = vélocité du mechant (int)
-                
+                self.arme_secrete : permet de savoir si l'arme secrete du mechant
+                                    bonus est active.
+                self.points : permet de savoir combien de point rapporte le 
+                                mechant
         Returns : None                
         """
         self.window = window
@@ -135,7 +138,7 @@ class NICOLLE (Mechant) :
             
         Retruns : none.
         """
-        
+    
         if on_tir == 2 :
             
             mauvaise_note = projectile.Projectile_secret(self.x+2,self.y+2,self.canvas,\

@@ -31,9 +31,12 @@ class Player :
                                 (lst)
             self.nb_vie : contiendra les vies du joueur (list d'objet canvas)
             self.im_coeur : image d'une vie (objet tk)
+            self.thermos_bu : contient un objet canvas, bonus, ou non (lst)
+            self.resistance : permet de savoir si le joueur est resistant au
+                                boule de feu (int).
         """
-        self.__x = 400
-        self.__y = 600
+        self.x = 400
+        self.y = 600
         self.vel = 10
         self.canvas = canvas
         self.window = window
@@ -43,7 +46,9 @@ class Player :
         self.projectile = []
         self.nb_vie = []
         self.im_coeur = Image.open("Image/coeur.png")
-        self.redi_image1 = ImageTk.PhotoImage(self.im_coeur.resize((50,50))) 
+        self.redi_image1 = ImageTk.PhotoImage(self.im_coeur.resize((50,50)))
+        self.thermos_bu = []
+        self.resistance = 0
         
    
     def move_right(self, evt):
@@ -55,9 +60,13 @@ class Player :
             
         Returns : none
         """
-        if self.__x < 950 :
-            self.__x += self.vel
+        if self.x < 950 :
+            self.x += self.vel
             self.canvas.move(self.yeti, self.vel, 0)
+            
+            if self.thermos_bu != []:
+                self.canvas.move(self.thermos_bu[0],self.vel,0)
+            
         
     def move_left(self, evt):
         """ 
@@ -68,9 +77,12 @@ class Player :
             
         Returns : none
         """
-        if self.__x  > 50 :
-            self.__x += -self.vel
+        if self.x  > 50 :
+            self.x += -self.vel
             self.canvas.move(self.yeti, -self.vel, 0)
+            
+            if self.thermos_bu != []:
+                self.canvas.move(self.thermos_bu[0],-self.vel,0)
         
     def crea_projectile (self, evt):
         """ 
@@ -84,7 +96,7 @@ class Player :
         """
         # comme on ne peut avoir que 1 projectile à l'écran 
         if len(self.projectile) <= 0:
-            self.projectile.append( pj.Projectile(self.__x, self.__y, self.canvas,\
+            self.projectile.append( pj.Projectile(self.x, self.y, self.canvas,\
                                                    "Image/rocher.png", -1,0) )
             self.projectile[-1].run(self.projectile)
            
@@ -159,7 +171,7 @@ class Player :
         Returns : none.
         """
         
-        self.yeti = self.canvas.create_image(self.__x,self.__y, \
+        self.yeti = self.canvas.create_image(self.x,self.y, \
                                              image = self.redi_image )
         self.key_event()
 

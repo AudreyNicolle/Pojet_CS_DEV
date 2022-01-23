@@ -38,7 +38,7 @@ class Projectile:
         self.vel = 10
         self.canvas = canvas
         self.image = Image.open(chemin_image)
-        self.redi_image = ImageTk.PhotoImage(self.image.resize((50,50))) 
+        self.redi_image = ImageTk.PhotoImage(self.image.resize((40,40))) 
         self.projectile = self.canvas.create_image(self.x,self.y, \
                                                      image = self.redi_image)
         self.dir = direction
@@ -95,10 +95,11 @@ class Projectile_secret(Projectile) :
  
 #•-----------------------------------------------------------------------------
 
-class Tartiflette(Projectile) :
+class Bonus(Projectile) :
     """
-    Cette classe permet de créer des tartiflettes qui redonnent de la vie au 
-    joueur.
+    Cette classe permet de créer des tartiflettes ou des thermos. Les 
+    tartiflettes redonnent de la vie au joueur. Les thermos lui offre une résistance
+    au boule_de_feu jusqu'à ce qu'une boule le touche.
     """
     
     def modif_caractéritique(self) : 
@@ -110,26 +111,22 @@ class Tartiflette(Projectile) :
     
         Returns : none.
         """
-        self.image = Image.open("Image/tartiflette.jpg")
-        self.redi_image = ImageTk.PhotoImage(self.image.resize((40,40))) 
-        self.projectile = self.canvas.create_image(self.x,self.y, \
-                                                     image = self.redi_image)
         self.vel = 8
 
     def run(self, lst_projectile) :  
         """
-        Cette fonction permet de faire avancer les tartiflettes sans passer en 
+        Cette fonction permet de faire avancer les bonus sans passer en 
         dessous du yéti et selon une parabole.
 
         Parameters :
-            lst_projectile : contient les tartiflettes (lst)
+            lst_projectile : contient les bonus (lst)
 
         Returns : None.
         """
         
         #on regarde si c'est une tartiflette qui vient de la gauche ou de la 
         #droite
-        if self.type == 2 :
+        if self.type[0] == '2' :
             x = 1
         else : 
             x = -1

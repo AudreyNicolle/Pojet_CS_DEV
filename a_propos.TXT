@@ -1,24 +1,35 @@
 Bonjour, 
 
-Nous avons reproduit le fonctionnement du célèbre jeux Space invaders ! 
-Cette fois, aidez notre fidèle yéti à éliminer les sorciers qui envahissent 
-sa montagne ! En effet les sorciers veulent lui voler ses thermos !
+Nous avons reproduit le fonctionnement du célèbre jeux 
+Space invaders ! Cette fois, aidez notre fidèle yéti à 
+éliminer les sorciers qui envahissent sa montagne ! En
+effet les sorciers veulent lui voler ses thermos !
 
 Les règles : 
 
-Comme au Space invader vous devez tuez les ennemis en leur tirant dessus. Vous 
-avez des ilots pour vous protégez jusqu'à que ceux-ci soit détruit par les 
+Comme au Space invader vous devez tuez les ennemis en 
+leur tirant dessus. Vous avez des ilots pour vous 
+protégez jusqu'à que ceux-ci soit détruit par les 
 ennemis ou par vous même si vous ne faites pas attention. 
-Votre vie est affiché sous forme de coeur rouge en bas à droite. Vous en perdez
-un lorsque vous êtes touché par une boule de feu et deux si vous êtes touché 
-par une mauvaise note de la part du mechant bonus. 
-En effet ce mechant bonus est un professeur à ses heures perdues et peut vous 
-envoyez de mauvais note si vous l'énervez trop. Vous pouvez essayé de le tuer 
-mais attention, il est plutôt résistant.
-Heureusement, pour vous aidez, votre maman yeti vous envoie de temps en temps des
-tartiflettes qui vous redonnent un coeur, c'est dire si elles ne sont pas 
-délicieuses !
-Bonne chance à vous brave yéti !
+Votre vie est affiché sous forme de coeur rouge en bas 
+à droite. Vous en perdez un lorsque vous êtes touché par
+une boule de feu et deux si vous êtes touché par une 
+mauvaise note de la part du mechant bonus. En effet ce 
+mechant bonus est un professeur à ses heures perdues et 
+peut vous envoyez de mauvais note si vous l'énervez trop.
+Vous pouvez essayé de le tuer mais attention, il est 
+plutôt résistant. Heureusement, pour vous aidez, votre 
+maman yeti vous envoie de temps en temps des tartiflettes 
+qui vous redonnent un coeur, c'est dire si elles ne sont 
+pas délicieuses ! De plus, vous possédez une entreprise,
+Thermophile, qui vend des thermos, et votre ami  et 
+collaborateur Paresseux vous envoie vos fameux thermos 
+qui contiennent une potion vous permettant d'être résistant
+à une boule de feu. Un carré rouge vous informe lorsque
+que vous avez la résistance.
+Bonne chance à vous brave yéti ! Protégez vos thermos,
+un savoir faire inestimmable que la concurrence ne 
+doit pas connaître !
 
 Les commandes :
 

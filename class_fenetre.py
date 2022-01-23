@@ -4,11 +4,10 @@
 Created on Mon Dec 13 14:42:01 2021
 @author: emma.begard & audrey.nicolle
 
-Ce fichier contient la classe qui s'occupe de la gestion de la fenêtre du jeu et des actions de celui-ci.
+Ce fichier contient la classe qui s'occupe de la gestion de la fenêtre du jeu 
+et des actions de celui-ci.
 
-To-do : - faire les bonus tartiflettes
-        - régler problème mauvaise note qui enlève pas vie
-        - régler vitesse du padre
+To-do : - faire des niveaux de difficultés.
 """
 #Import -----------------------------------------------------------------------
 
@@ -44,8 +43,8 @@ class class_window :
                     self.background : image du fond du jeu (objet tk)
                     self.papa : mechant bonus (int, partie sur pause ou objet 
                                                canvas, partie en cours)
-                    self.list_ilot : contient les 3 objets Ilot (list)
-                    self.lst_tartiflette : contien les objets tartiflettes (lst)
+                    self.lst_ilot : contient les 3 objets Ilot (list)
+                    self.lst_bonus : contient les objets bonus (lst)
         """  
         self.width = 1000
         self.height = 800
@@ -60,7 +59,7 @@ class class_window :
         self.background = ImageTk.PhotoImage(self.im_background.resize((1000,800))) 
         self.papa  = 0
         self.lst_ilot = [] 
-        self.lst_tartiflette = []
+        self.lst_bonus = []
       
     def about(self):
         """ 
@@ -87,8 +86,7 @@ class class_window :
     def principale(self):
         
         """ 
-        Cette fonction permet de créer la fenêtre et de gérer les 
-        interractions du jeu.
+        Cette fonction permet de créer la fenêtre et faire appaître les widgets.
         
         Paramaters : none 
         
@@ -131,10 +129,10 @@ class class_window :
         
     def crea_ilots (self) : 
         """
-        Cette fonction permet de créer 3 îlots composé de ligne de peti bloc.
+        Cette fonction permet de créer 3 îlots composé de lignes de petits blocs.
         
-        Parameters : none
-
+        Parameters : none.
+        
         Returns : none.
         """
         
@@ -153,14 +151,15 @@ class class_window :
         
     def gestion_tir_M_bonus(self) : 
         """
-        Cette fonction permet de faire tirer le méchant, sooit avec son arme
-        secrète s'il est activé où comme un méchant normal.
-
+        Cette fonction permet de faire tirer le méchant bonus, soit avec son 
+        arme secrète s'il est activée où comme un méchant normal.
+        
         Parameters : none
         
         Returns : none.
         """
         if self.game :
+            
             if self.papa.arme_secrete == 0 :
                 self.papa.tir(randint(1,100))
             
@@ -173,7 +172,7 @@ class class_window :
     def bad_daddy_is_comming(self) :
         """
         Cette fonction permet de mofifier la tête du mechant bonus quand il y a
-        de mechant.
+        moins de mechant.
         
         Parameters : none.
         
@@ -207,6 +206,7 @@ class class_window :
         """
         
         if self.player.nb_vie == [] :
+            
             #on supprime les canvas des mechants et leurs projectiles
             for sous_lst in self.enemy :
                 for bad_guy in sous_lst : 
@@ -226,10 +226,10 @@ class class_window :
                 ilot.lst_carre = []
                 
             #on supprime les tartiflettes 
-            for tartiflette in self.lst_tartiflette : 
-                self.canvas.delete(tartiflette)
+            for bonus in self.lst_bonus : 
+                self.canvas.delete(bonus)
             
-            self.lst_tartiflette = []
+            self.lst_bonus = []
             
             #on supprime les projectiles du mechant bonus
             for projectile in self.papa.lst_projectile : 
@@ -244,7 +244,15 @@ class class_window :
             #on supprime les projectiles du joueur
             for projectil in self.player.projectile :
                 self.canvas.delete(projectile.projectile)
-                
+            
+            self.player.projectile = []
+            
+            #on supprime les bonus s'il y en a
+            for bonus in self.lst_bonus : 
+                self.canvas.delete(bonus.projectile)
+            
+            self.player.lst_bonus = []   
+            
             #on supprime le canvas du joueur
             self.canvas.delete(self.player.yeti)
             
@@ -255,82 +263,133 @@ class class_window :
              
             self.canvas.after(50, self.gestion_fin_de_vie_EHPHAD)    
         
-            
-    def on_prepare_une_bonne_tartiflette (self) : 
+    
+    def thermos_bu (self) : 
+        """ 
+        Cette fonction permet de faire appraître un carré rouge symbolisant 
+        que la résistance à un tir est activée.
+        
+        Parameters : none.
+        
+        Returns : none.
         """
-        Cette fonction permet de créer une bonne tartiflette à donner à Mr.Yeti.
-        Elle est crée au bout d'un temps aléatoire.
+        
+        if self.player.thermos_bu == [] : 
+            
+            resistance = self.canvas.create_rectangle(self.player.x +20,\
+                         self.player.y + 10,self.player.x + 30 ,self.player.y + 20,\
+                             width = 0, fill = 'red')
+                
+            self.player.thermos_bu.append(resistance)
+            self.player.resistance = 1
+            
+    def fin_thermos (self) : 
+        """ 
+        Cette fonction permet d'enlever la fonction du thermos.
+        
+        Parameters : none.
+        
+        Returns : none.
+        """
 
+        if self.player.thermos_bu != []:
+
+            
+            self.canvas.delete(self.player.thermos_bu[0])
+            self.player.resistance = 0
+            self.player.thermos_bu = []
+            
+    def on_prepare_un_bonus (self) : 
+        """
+        Cette fonction permet de créer une bonne tartiflette à donner à Mr.Yeti
+        ou un thermos contenant la superbe potion.
+        Les bonus sont crées au bout d'un temps aléatoire.
+        
         Paramters : none.
         
         Returns : none.
         """
         if self.game :
-            
-            chance = randint(1,1000)
-            
-            if  chance == 1 :
 
-                x = randint(0,1)
-            
-            
+            chance = randint(1,150)
+            x = randint(0,1)
+
+            # on crée une tartiflette
+            if  chance == 1 :
+                
                 if x == 0 :
                     #on crée la tartiflette sur la coté gauche, 
-                    #tartiflette.type = 2
-                    tartiflette = P.Tartiflette(0, randint(100, 400), \
-                                    self.canvas, "Image/tartiflette.jpg", 1,2)
+                    #tartiflette.type = 21
+                    bonus = P.Bonus(0, randint(100, 400), \
+                                    self.canvas, "Image/tartiflette.jpg", 1,'21')
                 
                 else : 
-                    #on crée la tartiflette sur la coté gauche, 
-                    #tartiflette.type = 3
-                    tartiflette = P.Tartiflette(900, randint(100, 400), \
-                                    self.canvas, "Image/tartiflette.jpg", 1,3)
+                    #on crée la tartiflette sur le coté gauche, 
+                    #tartiflette.type = 31
+                    bonus = P.Bonus(900, randint(100, 400), \
+                                    self.canvas, "Image/tartiflette.jpg", 1,'31')
         
-                self.lst_tartiflette.append(tartiflette) 
+                self.lst_bonus.append(bonus) 
             
-            self.canvas.after(100,self.on_prepare_une_bonne_tartiflette)
+            #on crée un thermos
+            elif chance == 2 :
+
+                if x == 0 :
+                    
+                    #on crée le thermos sur le coté gauche, 
+                    #thermos.type = 22
+                    bonus = P.Bonus(0, randint(100, 400), \
+                                    self.canvas, "Image/thermos.png", 1,'22')
+                else : 
+                    #on crée la thermos sur le coté gauche, 
+                    #thermos.type = 32
+                    bonus = P.Bonus(900, randint(100, 400), \
+                                    self.canvas, "Image/thermos.png", 1,'32')
+                    
+                
+                
+                self.lst_bonus.append(bonus) 
+            
+            self.canvas.after(100,self.on_prepare_un_bonus)
             
         
     
-    def action_tartiflette (self) : 
+    def action_bonus (self) : 
         """
-        Cette fonction permet de faire bouger les tartiflettes, 
-        de les faires disparaîtes si ça fait trop longtemps qu'elles sont là
-
-        Returns
-        -------
-        None.
-
+        Cette fonction permet de faire bouger les bonus, 
+        de les faire disparaître si ça fait trop longtemps qu'ils sont là.
+        
+        Parameters : none.
+     
+        Returns : none.
         """
         if self.game : 
             
-            for tartiflette in self.lst_tartiflette : 
+            for bonus in self.lst_bonus : 
                 
-            
-                temps_de_vie = time.time_ns() - tartiflette.temps
+                #on regarde combien de temps ils sont là et on supprime si sup
+                # à 5s
+                temps_de_vie = time.time_ns() - bonus.temps
 
-                if temps_de_vie > 5000000000 : #10s
-                
-                    self.canvas.delete(tartiflette.projectile)
-                    self.lst_tartiflette.remove(tartiflette)
-                
+                if temps_de_vie > 5000000000 : #5s
+
+                    self.canvas.delete(bonus.projectile)
+                    self.lst_bonus.remove(bonus)
+                    
+                # sinon on les fait avancer
                 else :
-                    tartiflette.run(self.lst_tartiflette)
+
+                    bonus.run(self.lst_bonus)
                 
-            self.canvas.after(50, self.action_tartiflette) 
+            self.canvas.after(50, self.action_bonus) 
 
         
     def gestion_collisions(self):
         """
-        Cette fonction permet de vérifier si les ennemis entre en collision avec 
-        un projectile du joueur. Si c'est le cas les deux disparaissent. 
-        Elle permet aussi de vérifier si les ennemis rentrent en collision avec
-        le joueur. Si c'est le cas le cas le joueur perd toutes ses vies.
-        Ensuite elle permet de vérifier si'il y a une collision entre un projectile
-        d'un méchant et le joueur. Si c'est le cas, le joeur perd une vie et le 
-        tir disparaît.
-        Enfin elle permet de savoir si deux projectiles se collisionnent. Si 
-        c'est le cas les deux disparaissent.
+        Cette fonction permet de vérifier différents types de collisions
+        entre différents types d'entités. Elles enlèvent la vie des entités si 
+        besoin, elle set le score si besoin et vérifie que le mechant bonus soit 
+        en vie.
         
         Parameters : none.
         
@@ -357,22 +416,21 @@ class class_window :
                         # on test si le méchant a encore de la vie
                         if bad_guy.vie == 1:
                             
+                            
                             #on gère les collisions projectile gentil vs méchant 
                             for projectile_P in self.player.projectile :
 
-                                # si il y a collision 
+                                # s'il y a collision 
                                 if self.collision(projectile_P.projectile,\
                                                   bad_guy.mechant,0) :
                                     
                                     projectile_P.vie -= 1
                                     bad_guy.perd_vie(-1)
-                                    # on ajopute les points que rapporte l emontre
                                     self.score += bad_guy.points
 
                                 self.collision_ilot_projectile(projectile_P) 
                             
-                                
-                                
+                                                                
                             #on gère les collisions projectile méchant vs joueur
                             #et projectile gentil
                             for projectile_M in bad_guy.lst_projectile :
@@ -381,9 +439,17 @@ class class_window :
                                                   self.player.yeti,0) :
                                     
                                     projectile_M.vie -= 1
-                                    self.player.gestion_vie(-1)
-                                    # on perds des points sur notre score, autant que le monstre rapporterais
-                                    self.score -= bad_guy.points
+
+                                    if self.player.resistance == 0 :
+                                        
+                                        self.player.gestion_vie(-1)
+                                        # on perds des points sur notre score, 
+                                        #autant que le monstre rapporterais
+                                        self.score -= bad_guy.points
+                                     
+                                    #on enlève la résistance du joueur si besoin 
+                                    self.fin_thermos()
+                                    
                                     
                                 for projectile_P in self.player.projectile :
                                        
@@ -395,9 +461,10 @@ class class_window :
                                 
                                 self.collision_ilot_projectile(projectile_M)
                         
+                        
                             #on gère les collisions joueur vs méchant
                             if self.collision(bad_guy.mechant, self.player.yeti,0) :
-                                # print('here')
+
                                 bad_guy.perd_vie(-1)
                                 
                                 while len(self.player.nb_vie) >= 1 :
@@ -406,32 +473,54 @@ class class_window :
                                     # on perd du score, 2 fois plus que le monstre rapporte
                                     self.score -= 2*bad_guy.points
                     
+                    
                         else :
                             # on enlève le méchant de la liste des enemys, car il est mort
                             lst_bad_guy.remove(bad_guy)
                             # on n'affiche plus le méchant
                             self.canvas.delete(bad_guy.mechant)
         
+        
             for projectile in self.papa.lst_projectile :
                 
                 if self.collision(projectile.projectile,self.player.yeti,0):
+                   
                     projectile.vie -= 1
-                    self.player.gestion_vie(-1)                    
-                    # on perds des points sur notre score, autant que le monstre rapporterais
-                    self.score -= bad_guy.points
                     
-                    #si c'est un tir_secret on enlève une vie en plus
-                    if projectile.type == 1 :
-                       self.player.gestion_vie(-1) 
                 
+                    if self.player.resistance == 0 :
+                        
+                        self.player.gestion_vie(-1)                    
+                        # on perds des points sur notre score, autant que le monstre rapporterais
+                        self.score -= bad_guy.points
+                    
+                        #si c'est un tir_secret on enlève une vie en plus
+                        if projectile.type == 1 :
+                            self.player.gestion_vie(-1) 
+                            
+                    #on enlève la résistance du joueur si besoin 
+                    self.fin_thermos()
+                    
                 self.collision_ilot_projectile(projectile)
-                
-            for tartiflette in self.lst_tartiflette : 
-                
-                if self.collision(tartiflette.projectile, self.player.yeti,100) :
+               
+             #on regarde si le bonus sont mangés/bus par le joueur  
+            for bonus in self.lst_bonus : 
+
+                if self.collision(bonus.projectile, self.player.yeti,100) :                    
                     
-                    self.player.gestion_vie(1)
-                    tartiflette.vie -= 1
+                    #on regarde si c'est une tartiflette
+                    if bonus.type[1] == '1' :
+                                       
+                        self.player.gestion_vie(1)
+                    
+                    #sinon thermos
+                    else :
+                        self.thermos_bu()
+                    
+                    bonus.vie -= 1
+                
+            #on regarde si les projectiles du gentils rentrent en collision 
+            #avec le mechant bonus
             for projectile in self.player.projectile : 
                 
                 if self.collision(projectile.projectile, self.papa.mechant, 0) :
@@ -448,11 +537,11 @@ class class_window :
         """
         Cette fonction permet de faire les actions nécessaires lorsqu'un projectile
         rentre en collision avec un ilot.
-
-        Parameters
+        
+        Parameters :
             projectile : objet de la classe projectile
-
-        Returns : None.
+            
+        Returns : none.
         """
         #les boucles for permettent de rentrer dans la liste et d'obtenir un
         #élément bloc
@@ -489,13 +578,18 @@ class class_window :
         
         # les coordonnées de la deuxième entité
         coords2 = self.canvas.bbox(entite2)
-
-        #On vérifie s'i y a une collison par la gauche de l'entité 1 sur l'entité 2
-        if (x_2 > coords2[0]> x_1) and (y_1 - y < coords2[1] <  y_2 ):
-            return True
         
+        
+        #On vérifie s'i y a une collison par la gauche de l'entité 1 sur l'entité 2
+        # l'ajout de 10 à x_2 et la soustraction de 10 à x_1 est pour améliorer 
+        #la sensibilité
+        if (x_2 + 10 > coords2[0]> x_1 - 10) and (y_1 - y < coords2[1] <  y_2 ):
+
+            return True
+       
         #On vérifie s'i y a une collison par la droite de l'entité 1 sur l'entité 2       
-        elif (x_2 > coords2[2]> x_1) and (y_1 - y < coords2[3] < y_2 ):
+        elif (x_2 + 10 > coords2[2]> x_1 - 10) and (y_1 - y < coords2[3] < y_2 ):
+
             return True   
       
     def move_papa(self) :
@@ -558,7 +652,7 @@ class class_window :
                     else : 
                         for bad_guy in sous_lst :
                             bad_guy.move(0)
-                            bad_guy.tir(randint(1,10000)) #permet de les faire tirer
+                            bad_guy.tir(randint(1,4000)) #permet de les faire tirer
                             #avec une chance sur 10 000, cf fontion tir
                     
                     #rappelle de la fonction pour un mouvement continu            
@@ -597,7 +691,7 @@ class class_window :
    
     def update_score(self):
         """ 
-        Cette fonction sert à actualiser le score du joueur 
+        Cette fonction sert à actualiser le score du joueur. 
         
         Parametres:
             score : le label tkinter qui affiche le score (objet tk)
@@ -606,7 +700,7 @@ class class_window :
         """
         if self.game :
             # on met à jour l'affichage du score
-            self.display_score.set(' Votre score est de : '+str(self.score))
+            self.display_score.set(' Votre score est de : ' + str(self.score))
             self.canvas.after(10, self.update_score)
        
             
@@ -635,8 +729,8 @@ class class_window :
         self.gestion_collisions()  
         self.gestion_fin_de_vie_EHPHAD()                   
         self.gestion_tir_M_bonus()
-        self.on_prepare_une_bonne_tartiflette()
-        self.action_tartiflette()
+        self.on_prepare_un_bonus()
+        self.action_bonus()
         self.update_score()
 
 
@@ -662,4 +756,5 @@ class class_window :
 ecran= class_window()
 
 ecran.main()
+
 

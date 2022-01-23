@@ -30,7 +30,7 @@ class Ilot () :
     def crea_ilot (self) : 
         
         """ 
-        Cette fonction permet de créer une matrice de méchant.
+        Cette fonction permet de créer une matrice de bloc de l'îlot.
         
         Parameters : none
         
