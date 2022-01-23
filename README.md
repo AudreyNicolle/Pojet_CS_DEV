@@ -5,7 +5,7 @@ vous démarrez le programme.
 L'adresse du répertoire git est la suivante : 
     https://github.com/AudreyNicolle/Pojet_CS_DEV.git
     
-    Ce projet est composé d'un fichier principal, le ficher Fenetre.py. 
+    Ce projet est composé d'un fichier principal, le ficher class_fenetre.py. 
 En effet, le programme principal qui permet de créer un objet de la classe 
 Fenetre, qui, elle, permet de lancer le jeu en appuyant sur le bouton 
 jouer. Ainsi, pour mettre en route le programme, il faut lire le fichier 
@@ -22,6 +22,26 @@ entités différentes sont gérés dans la classe Fenetre.
 leur classe, par exemple le fait de bouger le joueur est géré par la classe 
 Player.
 
+Méthodes récusives : 
+    - dans le fichier class_fenetre : - gestion_tir_M_bonus
+                                      - bad_daddy_is_comming
+                                      - gestion_fin_de_vie_EHPHAD
+                                      - on_prepare_un_bonus
+                                      - action_bonus
+                                      - gestion_collisions
+                                      - move_papa
+                                      - move_groupe
+                                      - update_score
+
+Implémentation de listes : 
+     - dans la classe Fenetre : - méthode __init__ : self.enemy, 
+                                             self.lst_ilot,self.lst_bonus
+     - dans la classe Player :  - méthode __init__ : self.nb_vie,
+                                     self.projectile, self.thermos_bu
+     - dans la classe Ilot :  - méthode __init__ : self.lst_carre
+     - dans la classe Mechant :  - méthode __init__ : self.projectile
+               
+                                      
 Toutes les images utilisées sont libre de droit ou bien leur utilisation a été
 validé par la personne concernée.
 
