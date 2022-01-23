@@ -18,7 +18,10 @@ class Mechant :
     def __init__(self, window,canvas,x,y):
         """ 
         Cette classe permet de générer des méchants et de gérer leurs actions 
-        propres. 
+        propres soit :
+            - avancer verticalement et latéralement.
+            - tirer sur le joueur.
+            - gérer leur vie.
         
         Parameters :
                 window : la fenetre du jeu (tk)
@@ -44,7 +47,7 @@ class Mechant :
         self.redi_image = ImageTk.PhotoImage(self.image.resize((70,70))) 
         self.mechant = self.canvas.create_image(self.x,self.y, image = self.redi_image )
         self.dir = 1
-        self.vel = self.dir*0.1
+        self.vel = self.dir*0.4
         self.lst_projectile = []
         self.vie = 1
         self.arme_secrete = 0
@@ -91,7 +94,7 @@ class Mechant :
 
 #•-----------------------------------------------------------------------------
 
-class NICOLLE (Mechant) :
+class M_bonus (Mechant) :
     """
     Cette classe est celle qui permet de créer et de gérer le méchant bonus.Elle
     hérite de la classe mechant.

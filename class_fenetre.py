@@ -23,12 +23,25 @@ import time
 
 #Classe -----------------------------------------------------------------------
 
-class class_window :
+class Fenetre :
     
     def __init__(self) :
         """ 
-        Cette classe permet de générer le fenêtre de jeu, la zone de jeu canvas et
-        de gérer les actions entres les différentes entités du jeu.
+        Cette classe permet de générer le fenêtre de jeu, la zone de jeu canvas, le
+        lancement du jeu, l'affichage de la section ''À propos' et de gérer les
+        actions entres les différentes entités du jeu.
+        
+        En effet, elle permet :
+            - de gérer la collision entre deux entités. 
+            - de gérer les actions liées aux collisions des différentes entités 
+                du jeu.
+            - de gérer les mouvements des différentes entités.
+            - de gérer la fin du jeu, lorsque le joueur meurt.
+            - de gérer l'appartion du mechant bonus version gentil et énervé.
+            - de créer les matrices contenant les ilots ou les méchants.
+            - des gérer les créations des projectiles des différentes entités
+            - de gérer le score du joueur.
+            - de gérer l'apport des bonus au joueur.
         
         Parameters : 
                     self.width : largeur de la fenetre (int)
@@ -43,6 +56,7 @@ class class_window :
                     self.background : image du fond du jeu (objet tk)
                     self.papa : mechant bonus (int, partie sur pause ou objet 
                                                canvas, partie en cours)
+                    self.game : s'il est égal à True le jeu est en cours (booléen)
                     self.lst_ilot : contient les 3 objets Ilot (list)
                     self.lst_bonus : contient les objets bonus (lst)
         """  
@@ -250,6 +264,9 @@ class class_window :
             #on supprime les bonus s'il y en a
             for bonus in self.lst_bonus : 
                 self.canvas.delete(bonus.projectile)
+                
+            for resistance in self.player.thermos_bu : 
+                self.canvas.delete(resistance)
             
             self.player.lst_bonus = []   
             
@@ -670,8 +687,8 @@ class class_window :
         
         #Initialisation 
         i = 0 
-        y = 50
-        while i < 3 :
+        y = 80
+        while i < 4 :
             
             y += 60 #changement de la poition verticale pour chaque sous liste
             #Initialisation
@@ -717,7 +734,7 @@ class class_window :
         self.ennemy = []
         self.score = 0
         self.display_score.set(' Votre score est de : 0')
-        self.papa = mechant.NICOLLE(self.window,self.canvas,450,60)  
+        self.papa = mechant.M_bonus(self.window,self.canvas,450,60)  
         self.crea_mechant()        
         self.player.crea_vie()
         self.player.tout()
@@ -751,9 +768,8 @@ class class_window :
 
 
 #Main -------------------------------------------------------------------------
-#Note : à mettre dans un autre fichier --> fichier main       
-
-ecran= class_window()
+  
+ecran= Fenetre()
 
 ecran.main()
 

@@ -16,7 +16,11 @@ class Player :
     
     def __init__(self,window, canvas):
         """ 
-        Cette classe permet de gérer les actions propres du joueur.
+        Cette classe permet de gérer les actions propres du joueur soit :
+                - de le faire bouger latéralement.
+                - de gérer sa vie et leur affichage.
+                - tirer sur les ennemis
+                
         
         Parameters : 
             window : la fenetre du jeu (tk)

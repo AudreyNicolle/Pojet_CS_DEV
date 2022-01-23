@@ -18,7 +18,11 @@ class Projectile:
 
     def __init__(self, x, y, canvas, chemin_image, direction, genre):
         """ 
-        Cette classe s'occupe de gérer les projectiles du jeu.
+        Cette classe s'occupe de gérer les actions propres aux projectiles du 
+        jeu soit : 
+                - de les faire avancer vers le bas.
+                - de gérer leur vie.
+                
         
         Parameters : 
             self.__x : position selon l'axe des abscisses (int)
@@ -75,7 +79,8 @@ class Projectile:
 class Projectile_secret(Projectile) :
     """ 
     Cette classe permet de créer les projectile secret du mechant bonus. Elle
-    hérite de la classe Projectile.
+    hérite de la classe Projectile. Elle permet de modifier les caractéristiques 
+    nécessaires.
     """
      
     def modif_caracteristiques(self) :
@@ -98,8 +103,8 @@ class Projectile_secret(Projectile) :
 class Bonus(Projectile) :
     """
     Cette classe permet de créer des tartiflettes ou des thermos. Les 
-    tartiflettes redonnent de la vie au joueur. Les thermos lui offre une résistance
-    au boule_de_feu jusqu'à ce qu'une boule le touche.
+    tartiflettes redonnent de la vie au joueur. Les thermos lui offre une 
+    résistance au boule_de_feu jusqu'à ce qu'une boule le touche.
     """
     
     def modif_caractéritique(self) : 
